@@ -4,48 +4,55 @@ import java.util.Scanner;
 
 public class Start {
 
+	public static final String OLD_SWORD= "OLD_SWORD";
+	public static final String FIST = "FIST";
+	
 	public static void main(String[] args) {
-		/*Weapon miecz = new Swords("miecz", 1,3);
-		
-		Creatures bandyta = new HummanEnemies("Bandyta", 10, miecz);
-		
-		Player player = new Player("Name", 10, miecz);
-		System.out.println(player);
-		
-		Fight.hit(player, bandyta);*/
 		
 		Scanner scn = new Scanner(System.in);
-		
 		gameLoop(scn);
 	}
 
+	
+	
 	public static void gameLoop(Scanner scn) {
-		
+		GameContext context = new GameContext();
 		while(true) {
-			System.out.println("new game \n1 - stworz bohatera");
+			System.out.println("new game \n1 - stworz bohatera \n2 - rozpocznij gre");
 			switch(scn.nextLine()){
-			case "1": createNewPlayer(scn);
+			case "1": createNewPlayer(scn, context);
 			break;
-			default: System.out.println("wcisnij jeszcze raz");
+			case "2": game(scn, context);
+			break;
+			default: System.out.println("wybierz jeszcze raz");
 			break;
 		}
 		}
 		
 	}
 	
-	public static void createNewPlayer(Scanner scn){
+	public static void createNewPlayer(Scanner scn, GameContext context){
 		System.out.println("podaj imie bohatera");
 		Creatures player = new Player();
-		scn.nextLine();
 		player.setName(scn.nextLine());
 		player.setHp(10);
-		System.out.println("wybierz bron: 1: for old sword, 2: for fist");
 		player.setWeapon(weaponChooser(scn));
+		context.setMap(GameContext.PLAYER, player);
 		System.out.println("stworzono gracza: "+player.toString());
 	}
 	
 	public static Weapon weaponChooser(Scanner scn){
-		return WeaponFactory.makeWeapon(scn.nextLine());
+		System.out.println("wybierz bron: 1: for old sword, 2: for fist");
+		switch(scn.nextLine()) {
+		case "1": return WeaponFactory.makeWeapon(OLD_SWORD);
+		case "2": return WeaponFactory.makeWeapon(FIST);
+		default: weaponChooser(scn);
+		}
+		return null;
+	}
+	
+	public static void game(Scanner scn, GameContext context) {
+		System.out.println("jestes graczem 1 " + context.getMap(GameContext.PLAYER).toString());
 	}
 	
 }
