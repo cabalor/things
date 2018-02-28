@@ -52,7 +52,27 @@ public class Start {
 	}
 	
 	public static void game(Scanner scn, GameContext context) {
-		System.out.println("jestes graczem 1 " + context.getMap(GameContext.PLAYER).toString());
+		System.out.println("jestes graczem 1 " + context.getMap(GameContext.PLAYER).toString()+"\n co chcesz zrobic? \n znajdz przeciwnika");
+		switch(scn.nextLine()){
+		case "1": searchForAdv(scn, context);
+		break;
+		/*case "2": game(scn, context);
+		break;*/
+		default: System.out.println("wybierz jeszcze raz");
+		break;
+	}
+	}
+	
+	public static void searchForAdv(Scanner scn, GameContext context) {
+		System.out.println("wyruszy³eœ na przygodê");
+		
+		
+	}
+	
+	
+	
+	public static void fight(GameContext context) {
+		
 	}
 	
 }
