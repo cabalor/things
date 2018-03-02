@@ -2,13 +2,9 @@ package start;
 
 import java.util.List;
 
-public class Fight extends Creatures implements Actions {
+public class Fight extends Creatures {
 
-	@Override
-	public void search() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	protected static void hit(Creatures at, Creatures def) {
 		System.out.println(at + " "+def);
