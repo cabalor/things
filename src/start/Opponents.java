@@ -1,11 +1,26 @@
 package start;
 
-public class Opponents extends Creatures{
+import java.util.HashMap;
+import java.util.Map;
+
+public class Opponents {
 
 	
-	public Opponents(String name, int hp, Weapon weapon) {
-		super();
+	public static final String zlo = "zlo";
+	
+	
+	 Map<String, Creatures> enemies = new HashMap<>();
+	
+	public static Creatures getOpponent(String str) {
+		Map<String, Creatures> enemies = new HashMap<>();
+		enemies.put(Opponents.zlo, new HummanEnemies("zlodziej", 5, WeaponFactory.makeWeapon(Start.OLD_SWORD), 1));
+		
+		
+		
+		return enemies.get(str);
+		
 	}
+	
 	
 	
 }

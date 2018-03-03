@@ -4,14 +4,33 @@ import java.util.List;
 
 public class Fight extends Creatures {
 
+	public Fight() {
+		
+	}
+	
+	
+	public static void Fight(Creatures at, Creatures def) {
+		while(at.getHp() > 0 && def.getHp() >0) {
+			hit(at, def);
+	}
+	}
+	
+	
+	
 	
 
-	protected static void hit(Creatures at, Creatures def) {
-		System.out.println(at + " "+def);
+	private static void hit(Creatures at, Creatures def) {
+		//System.out.println(at + " "+def);
 		System.out.println("dmg "+ at.getWeapon().maxDmg);
-		def.setHp(def.getHp() - at.getWeapon().maxDmg);
+		def.setHp(def.getHp() - (at.weapon.minDmg +(int)(Math.random() *((at.weapon.maxDmg - at.weapon.minDmg)+1))));
 		//def.hp = def.hp - (at.weapon.minDmg + ((int) Math.random() + ((at.weapon.maxDmg + at.weapon.minDmg)+1)));
-		System.out.println("currently hp = " + def.getHp());
+	
+		if(def.getHp() <=0) {
+			System.out.println("przeiwnik pokonany");
+		} else {
+		System.out.println("currently hp defa = " + def.getHp());
+		}
+
 		
 	}
 	
