@@ -1,16 +1,22 @@
 package start;
 
-public class Adventures {
+import java.util.Scanner;
+
+public abstract class Adventures implements AdventurerActions{
 
 	
-	private String name;
-
-	public String getName() {
-		return name;
+	
+	public void fightAdventure(Scanner scn) {
+		
+		System.out.println("dupa");
+		
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	
+	public void serachAdventure(Scanner scn) {
+		
+		
 	}
+	
 	
 }

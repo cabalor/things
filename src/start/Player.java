@@ -9,14 +9,15 @@ public class Player extends Creatures{
 		this.weapon = weapon;
 	}
 
-	public Player(String name, int hp, Weapon wep) {
-		super(name, hp, wep);
+	public Player(String name, int hp, Weapon wep)  {
+		super(name, hp, wep, 1,0);
 	}
 	
 	public Player() {}
 	@Override
 	public String toString() {
-		return "Nazywasz siê " + super.getName() + " masz " + super.getHp()+ " punktów zycia "+" posiadasz bron "+ super.getWeapon().weaponName;
+		return "Nazywasz siï¿½ " + super.getName() + " masz " + super.getHp()+ " punktï¿½w zycia "+" posiadasz bron "+ super.getWeapon().weaponName 
+				+ " masz "+ super.getLevel();
 	}
 
 

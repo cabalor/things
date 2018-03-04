@@ -2,16 +2,27 @@ package start;
 
 public abstract class Creatures {
 
-	private int hp;
-	private String name;
+	protected int hp;
+	protected String name;
 	protected Weapon weapon;
+	protected int level;
+	protected int experience;
 	
 	public Creatures() {}
 	
-	public Creatures(String name, int hp, Weapon wep) {
+	public Creatures(String name, int hp, Weapon wep, int lvl, int exp) {
 		this.setName(name);
 		this.setHp(hp);
 		setWeapon(wep);
+		level = lvl;
+		experience = exp;
+	}
+	
+	public Creatures(String name, int hp, Weapon wep, int lvl) {
+		this.setName(name);
+		this.setHp(hp);
+		setWeapon(wep);
+		level = lvl;
 	}
 	
 	
@@ -21,7 +32,7 @@ public abstract class Creatures {
 
 	@Override
 	public String toString() {
-		return "Creatures [hp=" + getHp() + ", name=" + getName() + ", weapon=" + getWeapon() + "]";
+		return "Creatures [hp=" + getHp() + ", name=" + getName() + ", weapon=" + getWeapon() + " lvl "+ getLevel()+ "]";
 	}
 
 	public int getHp() {
@@ -46,6 +57,22 @@ public abstract class Creatures {
 
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public int getExperience() {
+		return experience;
+	}
+
+	public void setExperience(int experience) {
+		this.experience = experience;
 	}
 		
 	
