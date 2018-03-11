@@ -78,8 +78,8 @@ public class Start {
 
 	public static void searchForAdv(Scanner scn) {
 		System.out.println("wyruszasz na przygode");
-		AdvFactory.makeQuest(Start.generator(),scn);
-		
+		AdvFactory.makeQuest(Start.generator(4),scn);
+		game(scn);
 
 	}
 
@@ -87,9 +87,17 @@ public class Start {
 
 	}
 
-	public static int generator() {
+	
+	public static int generator(int max) {
 		Random random = new SecureRandom();
-		return random.nextInt(4);
+		System.out.println("liczba losowa " + random.nextInt(max));
+		return random.nextInt(max);
+	}
+	
+	public static int generator(int min, int max) {
+		Random random = new SecureRandom();
+		System.out.println("min "+min+" amx "+max);
+		return random.nextInt((max - min) + 1) + min;
 	}
 	
 

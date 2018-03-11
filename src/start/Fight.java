@@ -21,7 +21,8 @@ public class Fight extends Creatures {
 
 	private static void hit(Creatures at, Creatures def) {
 		System.out.println("dmg "+ at.getWeapon().maxDmg);
-		def.setHp(def.getHp() - (at.weapon.minDmg +(int)(Math.random() *((at.weapon.maxDmg - at.weapon.minDmg)+1))));
+		
+		def.setHp(def.getHp() - (Start.generator(at.getWeapon().minDmg, at.getWeapon().maxDmg)));
 		if(def.getHp() <=0) {
 			System.out.println("przeiwnik pokonany");
 		} else {

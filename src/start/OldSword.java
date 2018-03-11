@@ -3,7 +3,7 @@ package start;
 public class OldSword extends Swords{
 
 	public OldSword()  {
-		super(OldSword.class.getName(), 1, 2);
+		super(OldSword.class.getName(), 1, 3);
 	}
 
 	@Override

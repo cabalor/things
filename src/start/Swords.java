@@ -4,8 +4,8 @@ package start;
 public class Swords extends Weapon{
 
 	
-	public Swords(String name, int maxDmg, int minDmg)  {
-		super(name, maxDmg, minDmg);
+	public Swords(String name,int minDmg, int maxDmg)  {
+		super(name, minDmg, maxDmg);
 	}
 
 	@Override

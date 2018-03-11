@@ -10,7 +10,7 @@ public abstract class Weapon {
 	
 	public Weapon() {}
 	
-	public Weapon(String name, int maxDmg, int minDmg) {
+	public Weapon(String name, int minDmg, int maxDmg) {
 		weaponName = name;
 		this.maxDmg = maxDmg;
 		this.minDmg = minDmg;
