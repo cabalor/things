@@ -38,13 +38,19 @@ public class Start {
 	}
 
 	public static void createNewPlayer(Scanner scn) {
+		
+		//if(GameContext.getMap(GameContext.PLAYER)==null) {
 		System.out.println("podaj imie bohatera");
-		Creatures player = new Player();
+		Player player = Player.getPlayer(scn);
 		player.setName(scn.nextLine());
 		player.setHp(10);
 		player.setWeapon(weaponChooser(scn));
 		GameContext.setMap(GameContext.PLAYER, player);
 		System.out.println("stworzono gracza: " + player.toString());
+		//} else {
+		//	System.out.println("stworzyles juz bohatera");
+		//}
+		
 	}
 
 	public static Weapon weaponChooser(Scanner scn) {
@@ -61,15 +67,15 @@ public class Start {
 	}
 
 	public static void game(Scanner scn) {
-		System.out.println("jestes graczem 1 " + GameContext.getMap(GameContext.PLAYER).toString()
-				+ "\n co chcesz zrobic? \n 1-przygoda");
+		System.out.println(
+				"Co chcesz zrobic? \n 1-przygoda \n 2- twoje staystyki");
 		switch (scn.nextLine()) {
 		case "1":
 			searchForAdv(scn);
 			break;
-		/*
-		 * case "2": game(scn, context); break;
-		 */
+		case "2": Utils.showPlayer((Player)GameContext.getMap(GameContext.PLAYER));
+			break;
+		 
 		default:
 			System.out.println("wybierz jeszcze raz");
 			break;
@@ -78,7 +84,7 @@ public class Start {
 
 	public static void searchForAdv(Scanner scn) {
 		System.out.println("wyruszasz na przygode");
-		AdvFactory.makeQuest(Start.generator(4),scn);
+		AdvFactory.makeQuest(Utils.generator(4),scn);
 		game(scn);
 
 	}
@@ -86,20 +92,5 @@ public class Start {
 	public static void fight(GameContext context) {
 
 	}
-
-	
-	public static int generator(int max) {
-		Random random = new SecureRandom();
-		System.out.println("liczba losowa " + random.nextInt(max));
-		return random.nextInt(max);
-	}
-	
-	public static int generator(int min, int max) {
-		Random random = new SecureRandom();
-		System.out.println("min "+min+" amx "+max);
-		return random.nextInt((max - min) + 1) + min;
-	}
-	
-
 	
 }

@@ -8,7 +8,7 @@ public class OldSword extends Swords{
 
 	@Override
 	public String toString() {
-		return super.toString();
+		return "Stary miecz zadaje obrażnia od "+ super.minDmg +" do "+super.maxDmg;
 	}
 	
 	

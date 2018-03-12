@@ -15,7 +15,7 @@ public class FightQuest extends Adventures{
 		System.out.println("spotykasz przeciwnika");
 		
 		
-		Fight.Fight((Creatures)GameContext.getMap(GameContext.PLAYER), Opponents.getOpponent(Opponents.zlo));
+		Fight.Walka((Creatures)GameContext.getMap(GameContext.PLAYER), Opponents.getOpponent(Opponents.zlo));
 	}
 
 
