@@ -6,8 +6,7 @@ import java.util.Scanner;
 
 public class Start {
 
-	public static final String OLD_SWORD = "OLD_SWORD";
-	public static final String FIST = "FIST";
+	
 
 	public static void main(String[] args) {
 
@@ -25,7 +24,7 @@ public class Start {
 					createNewPlayer(scn);
 					break;
 				case "2":
-					game(scn);
+					gameMenu(scn);
 					break;
 				default:
 					System.out.println("wybierz jeszcze raz");
@@ -57,16 +56,16 @@ public class Start {
 		System.out.println("wybierz bron: 1: for old sword, 2: for fist");
 		switch (scn.nextLine()) {
 		case "1":
-			return WeaponFactory.makeWeapon(OLD_SWORD);
+			return WeaponFactory.makeWeapon(Swords.OLD_SWORD);
 		case "2":
-			return WeaponFactory.makeWeapon(FIST);
+			return WeaponFactory.makeWeapon(Unarmed.FIST);
 		default:
 			weaponChooser(scn);
 		}
 		return null;
 	}
 
-	public static void game(Scanner scn) {
+	public static void gameMenu(Scanner scn) {
 		System.out.println(
 				"Co chcesz zrobic? \n 1-przygoda \n 2- twoje staystyki");
 		switch (scn.nextLine()) {
@@ -85,7 +84,7 @@ public class Start {
 	public static void searchForAdv(Scanner scn) {
 		System.out.println("wyruszasz na przygode");
 		AdvFactory.makeQuest(Utils.generator(4),scn);
-		game(scn);
+		gameMenu(scn);
 
 	}
 

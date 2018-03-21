@@ -13,7 +13,7 @@ public class Opponents {
 	
 	public static Creatures getOpponent(String str) {
 		Map<String, Creatures> enemies = new HashMap<>();
-		enemies.put(Opponents.zlo, new HummanEnemies("zlodziej", 10, WeaponFactory.makeWeapon(Start.OLD_SWORD), 1));
+		enemies.put(Opponents.zlo, new HummanEnemies("zlodziej", 10, WeaponFactory.makeWeapon(Swords.OLD_SWORD), 1));
 		
 		
 		

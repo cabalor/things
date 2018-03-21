@@ -10,9 +10,9 @@ public class Player extends Creatures{
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
 	}
-
+	
 	public Player(String name, int hp, Weapon wep)  {
-		super(name, hp, wep, 1,0);
+		super(name, hp, wep, 1,0, new Attribiutes(10, 10, 10, 10, 10));
 	}
 	
 	public Player() {}

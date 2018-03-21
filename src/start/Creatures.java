@@ -7,15 +7,17 @@ public abstract class Creatures {
 	protected Weapon weapon;
 	protected int level;
 	protected int experience;
+	protected Attribiutes attribiutes;
 	
 	public Creatures() {}
 	
-	public Creatures(String name, int hp, Weapon wep, int lvl, int exp) {
+	public Creatures(String name, int hp, Weapon wep, int lvl, int exp, Attribiutes at) {
 		this.setName(name);
 		this.setHp(hp);
 		setWeapon(wep);
-		level = lvl;
-		experience = exp;
+		this.level = lvl;
+		this.experience = exp;
+		this.attribiutes = at;
 	}
 	
 	public Creatures(String name, int hp, Weapon wep, int lvl) {
