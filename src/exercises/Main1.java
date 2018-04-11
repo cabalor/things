@@ -1,6 +1,10 @@
 package exercises;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.stream.Collectors;
 
 public class Main1 {
 
@@ -11,9 +15,16 @@ public class Main1 {
 		
 		int[] numb = {3,2,1,3};
 		
+		int[] numbers = {8,50,53,40};
+		
+		numbers = markss(numbers);
 		System.out.println(matrixTrace(tab));
 		System.out.println(mostNumbers(numb));
 		System.out.println(time("03:05:45PM"));
+		System.out.println(Arrays.toString(numbers));
+		
+		
+		
 		
 	}
 	
@@ -69,6 +80,38 @@ public class Main1 {
         else {
             return s.substring(0, s.length()-2);
         }
+    }
+	
+	static int[] marks(int[] grades) {
+        for(int i=0; i<grades.length; i++){
+            if(grades[i]<38 || grades[i]%5==0){
+                grades[i]=grades[i];
+            }else if((grades[i]+2)%5==0){
+                grades[i] = grades[i]+2;
+            }else if((grades[i]+1)%5==0){
+                grades[i] = grades[i]+1;
+            }else {
+                grades[i] = grades[i];
+            }
+        }
+        return grades;
+    }
+	static int[] markss(int[] grades) {
+		List<Integer> lista = Arrays.stream(grades).boxed().collect(Collectors.toList());
+		lista = lista.stream().map( i -> { 
+			if(i<38 || i%5==0) {
+					return i;
+		} else if((i+2)%5==0) {
+				return i+2;
+			} else if((i+1)%5==0) {
+				return i+1;
+			}
+			return i;
+		}
+	).collect(Collectors.toList());
+		grades = lista.stream().mapToInt(i -> i).toArray();
+        
+        return grades;
     }
 	
 }
