@@ -114,4 +114,26 @@ public class Main1 {
         return grades;
     }
 	
+	static void fruits(int s, int t, int a, int b, int[] app, int[] ora) {
+        int sccoreA = 0, sccoreB = 0;
+        /*for(int i=0; i<apples.length;i++){
+            if(apples[i]+a>=s && apples[i]+a<=t){
+                sccoreA++;
+            }
+        }
+        for(int i=0; i<oranges.length;i++){
+            if(oranges[i]+b>=s && oranges[i]+b<=t){
+                sccoreB++;
+            }
+        }
+        System.out.println(sccoreA + "\n" + sccoreB);*/
+        
+        sccoreA = (int) Arrays.stream(app).filter(app-> app+a>=s && app+a<=t).count();
+        sccoreB = (int) Arrays.stream(ora).filter(ora-> ora+b>=s && ora+b<=t).count();
+        
+        System.out.println(sccoreA + "\n" + sccoreB);
+    }
+	
+	
+	
 }
