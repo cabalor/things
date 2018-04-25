@@ -74,7 +74,6 @@ public class Start {
 			break;
 		case "2": Utils.showPlayer((Player)GameContext.getMap(GameContext.PLAYER));
 			break;
-		 
 		default:
 			System.out.println("wybierz jeszcze raz");
 			break;
