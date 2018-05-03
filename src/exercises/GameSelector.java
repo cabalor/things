@@ -11,20 +11,21 @@ import javax.swing.JPanel;
 
 public class GameSelector extends JFrame {
 
-	public JFrame frame;
+	public static JFrame selectorFrame;
 	
 	
  	public GameSelector() {
-		frame = new JFrame("Menu");
-    	frame.setSize(300, 200);
-    	frame.setLocationRelativeTo(null);
-    	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ 		MemGame.mainJFrame.setVisible(false);
+ 		selectorFrame = new JFrame("Menu");
+ 		selectorFrame.setSize(300, 200);
+ 		selectorFrame.setLocationRelativeTo(null);
+ 		selectorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	//frame.setJMenuBar(MemGame.menu);
-    	MemGame.frame.setVisible(false);
-    	frame.setVisible(true);
+ 		selectorFrame.setVisible(true);
     	
-    	JButton button = new JButton("4x4");
-		JButton button2 = new JButton("4x3");
+    	JButton button4x3 = new JButton("4x3");
+		JButton button4x4 = new JButton("4x4");
+		JButton button5x4 = new JButton("5x4");
 		JPanel kontener = new JPanel(new BorderLayout());
 		//JPanel kontener = new JPanel(new GridBagLayout());
 		//GridBagConstraints gBConst = new GridBagConstraints();
@@ -41,28 +42,31 @@ public class GameSelector extends JFrame {
 		//kontener.add(button2, gbc);
 		
 		top.add(napis);
-		buttonPanel.add(button);
-		buttonPanel.add(button2);
+		buttonPanel.add(button4x3);
+		buttonPanel.add(button4x4);
+		buttonPanel.add(button5x4);
 		kontener.add(top, BorderLayout.NORTH);
 		kontener.add(buttonPanel, BorderLayout.CENTER);
-    	frame.add(kontener);
+		selectorFrame.add(kontener);
     	
     	ActionListener buttonListner = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch (e.getActionCommand()) {
-                case "4x4": System.out.println("4x4");
+                case "4x3": new MainBoard(4, 3);
                 break;
-                case "4x3": System.out.println("4x3");
+                case "4x4": new MainBoard(4, 4);
+                break;
+                case "5x4": new MainBoard(5, 4);
                 break;
             }
 				
 			}
 		};
     	
-    	button.addActionListener(buttonListner);
-    	button2.addActionListener(buttonListner);
+		button4x3.addActionListener(buttonListner);
+		button4x4.addActionListener(buttonListner);
+		button5x4.addActionListener(buttonListner);
     	
-        
 	}
 	
 }
