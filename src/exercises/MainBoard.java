@@ -12,12 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-public class MainBoard implements ActionListener {
+public class MainBoard  {
 
 	JFrame gameJFrame;
-	ImageIcon zakryty;
+	ImageIcon znakZapytania;
 	ImageIcon kreci¹³NaObrazku;
-	ImageIcon[] obrazkiNaGuzikach;
+	ImageIcon[] obrazki;
 	ImageIcon[] ukryteObrazki;
 	JButton[] guziki;
 	ArrayList<Boolean> lista = new ArrayList<>();
@@ -25,7 +25,7 @@ public class MainBoard implements ActionListener {
 	int halfSize;
 	int klikniecie;
 	int pierwszyZaznaczony;
-	int liczbaProb;
+	public static int liczbaProb;
 
 	MainBoard(int width, int height) {
 
@@ -33,11 +33,11 @@ public class MainBoard implements ActionListener {
 
 		halfSize = (width * height) / 2;
 		size = width * height;
-		zakryty = new ImageIcon("question.png");
-		kreci¹³NaObrazku = new ImageIcon("tileFlip.gif");
+		znakZapytania = new ImageIcon("znakZapytania.png");
+		kreci¹³NaObrazku = new ImageIcon("flip.gif");
 		ukryteObrazki = new ImageIcon[size];
 		guziki = new JButton[size];
-		obrazkiNaGuzikach = new ImageIcon[halfSize];
+		obrazki = new ImageIcon[halfSize];
 
 		gameJFrame = new JFrame("JMemoryGame");
 		gameJFrame.setSize(width * 100, height * 100);
@@ -46,18 +46,18 @@ public class MainBoard implements ActionListener {
 		gameJFrame.setLayout(new GridLayout(width, height));
 		gameJFrame.setJMenuBar(MemGame.menu(MemGame.menuListner()));
 
-		// zaciaganie obrazkow na guziki
+		// zaciaganie obrazkow
 		for (int i = 0; i < halfSize; i++) {
-			obrazkiNaGuzikach[i] = new ImageIcon("fox" + Integer.toString(i + 1) + ".png");
+			obrazki[i] = new ImageIcon("obrazek" + Integer.toString(i + 1) + ".png");
 		}
 
 		// generacja guzikow na planszy
 		for (int i = 0; i < guziki.length; i++) {
-			guziki[i] = new JButton(zakryty);
+			guziki[i] = new JButton(znakZapytania);
 			guziki[i].setContentAreaFilled(false);
 			guziki[i].setRolloverIcon(kreci¹³NaObrazku);
 			guziki[i].setActionCommand(Integer.toString(i));
-			guziki[i].addActionListener(this);
+			guziki[i].addActionListener(akcjaKlikania);
 			gameJFrame.add(guziki[i]);
 		}
 
@@ -77,17 +77,17 @@ public class MainBoard implements ActionListener {
 		}
 		Random rand = new Random();
 		for (int i = 0; i < halfSize; i++) {
-			int pozycjaObrazka = rand.nextInt(listaObrazkow.size());
-			System.out.println("i = " + i + " pozycja obrazka " + pozycjaObrazka);
-			ukryteObrazki[listaObrazkow.get(pozycjaObrazka)] = obrazkiNaGuzikach[i];
-			listaObrazkow.remove(pozycjaObrazka);
+			int random = rand.nextInt(listaObrazkow.size());
+			System.out.println("i = " + i + " pozycja obrazka " + random);
+			ukryteObrazki[listaObrazkow.get(random)] = obrazki[i];
+			listaObrazkow.remove(random);
 			listaObrazkow.forEach(dupa -> System.out.println(dupa));
 
-			pozycjaObrazka = rand.nextInt(listaObrazkow.size());
-			System.out.println("i = " + i + " " + pozycjaObrazka);
-			ukryteObrazki[listaObrazkow.get(pozycjaObrazka)] = obrazkiNaGuzikach[i];
-			listaObrazkow.remove(pozycjaObrazka);
-			System.out.println("i = " + i + " pozycja obrazka " + pozycjaObrazka);
+			random = rand.nextInt(listaObrazkow.size());
+			System.out.println("i = " + i + " " + random);
+			ukryteObrazki[listaObrazkow.get(random)] = obrazki[i];
+			listaObrazkow.remove(random);
+			System.out.println("i = " + i + " pozycja obrazka " + random);
 			listaObrazkow.forEach(dupa -> System.out.println(dupa));
 		}
 		for (int i = 0; i < size; i++) {
@@ -99,7 +99,7 @@ public class MainBoard implements ActionListener {
 	private void zaslonGuziki() {
 		for (int i = 0; i < size; i++) {
 			if (!lista.get(i)) {
-				guziki[i].setIcon(zakryty);
+				guziki[i].setIcon(znakZapytania);
 				guziki[i].setRolloverIcon(kreci¹³NaObrazku);
 				guziki[i].setBorderPainted(true);
 			}
@@ -114,25 +114,26 @@ public class MainBoard implements ActionListener {
 		} else {
 			System.out.println("koniec gry");
 			gameJFrame.setVisible(false);
-			new MemGame();
+			new EndScreen();
 		}
 	}
 
-	@Override
+	ActionListener akcjaKlikania = new ActionListener() {
 	public void actionPerformed(ActionEvent event) {
-		if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == zakryty) {
+		if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
 
 			guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
 			guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
 			guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
 			klikniecie++;
-			new java.util.Timer().schedule(
+			
+			/*new java.util.Timer().schedule(
 					new TimerTask() {
 						public void run() {
 							zaslonGuziki();
 							System.err.println("wykonuje siê");
 						}
-					}, 2000);
+					}, 2000);*/
 			
 			
 			if (klikniecie == 1) {
@@ -162,6 +163,7 @@ public class MainBoard implements ActionListener {
 
 	}
 
+	};
 	public void sprawdz() {
 		for (Boolean x : lista) {
 			System.out.println(x);

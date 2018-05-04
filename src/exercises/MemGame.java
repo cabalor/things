@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,7 +19,7 @@ import javax.swing.SwingUtilities;
 public class MemGame {
 	
 		public static JFrame mainJFrame;
-		//public static JMenuBar mainMenu;
+		
 		
 		
 	public MemGame(){
@@ -28,20 +30,12 @@ public class MemGame {
 		mainJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainJFrame.setLayout(new BorderLayout());
     	
-    	
-		//mainMenu = new JMenuBar();
 		JLabel napis = new JLabel("witaj w grze memory");
-		//JMenuItem exit = new JMenuItem("wyjscie");
-		//JMenuItem info = new JMenuItem("wyniki");
-		//JMenuItem newGame = new JMenuItem("nowaGra");
 		JButton button = new JButton("nowaGra");
 		JButton button2 = new JButton("wyjscie");
-		//mainMenu.add(exit);
-		//mainMenu.add(info);
-		//mainMenu.add(newGame);
+	
 		
 		JPanel first = new JPanel();
-		//first.setLayout(new FlowLayout(FlowLayout.CENTER));
 		first.add(napis);
 		JPanel second = new JPanel();
 		second.add(button);
@@ -52,29 +46,8 @@ public class MemGame {
 		containerPanel.add(second);
 		containerPanel.add(third);
 		mainJFrame.add(containerPanel, BorderLayout.NORTH);
-		//mainJFrame.setJMenuBar(mainMenu);
 		mainJFrame.setVisible(true);
-		
-		
-		/*ActionListener menuList = new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                switch (event.getActionCommand()) {
-                    case "End?": show();
-                    break;
-                    case "nowaGra": nowaGra();
-                    break;
-                    case "wyjscie": System.exit(0);
-                    break;
-                    case "wyniki": JOptionPane.showMessageDialog(mainJFrame, wyniki(), null, JOptionPane.INFORMATION_MESSAGE);
-                    break;
-                }
-            }
-        };*/
-        
         mainJFrame.setJMenuBar(menu(menuListner()));
-        //exit.addActionListener(menuList);
-        //info.addActionListener(menuList);
-        //newGame.addActionListener(menuList);
         
         button.addActionListener(menuListner());
         button2.addActionListener(menuListner());
@@ -85,11 +58,26 @@ public class MemGame {
 	
 	
 	public static String wyniki() {
-		return "najlepsze wyniki\n dupa\n dup\nasdsadasdasdsadddsada\nadsasdasdadasddd\nffffff";
+		StringBuilder sb = null;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("wyniki.txt"));
+			sb = new StringBuilder();
+		    String str;
+		    while((str = br.readLine()) != null) {
+		    	sb.append(str);
+		    	sb.append("\n");
+		    }
+		    br.close();
+		} catch ( Exception e) {
+			e.printStackTrace();
+		}
+		
+		return sb.toString();
 	}
 	
 	
 	private static void nowaGra() {
+		mainJFrame.setVisible(false);
 		new GameSelector();
 	}
 	
@@ -105,15 +93,16 @@ public class MemGame {
 
 	public static JMenuBar menu(ActionListener listner) {
 		JMenuBar mainMenu = new JMenuBar();
+		//JMenuItem rezygnacja = new JMenuItem("rezygnacja");
 		JMenuItem exit = new JMenuItem("wyjscie");
 		JMenuItem info = new JMenuItem("wyniki");
-		//JMenuItem newGame = new JMenuItem("nowaGra");
+
 		mainMenu.add(exit);
 		mainMenu.add(info);
-		//mainMenu.add(newGame);
+		//mainMenu.add(rezygnacja);
 		exit.addActionListener(listner);
         info.addActionListener(listner);
-        //newGame.addActionListener(listner);
+        //rezygnacja.addActionListener(listner);
         return mainMenu;
 	}
 	
@@ -121,7 +110,7 @@ public class MemGame {
 		return new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 switch (event.getActionCommand()) {
-                    case "End?": /*show();*/
+                    case "rezygnacja": new MemGame();
                     break;
                     case "nowaGra": nowaGra();
                     break;
@@ -133,4 +122,12 @@ public class MemGame {
             }
 	};
 	}
+	
+	public void rezygnuje() {
+		
+		
+		
+	}
+	
+	
 }
