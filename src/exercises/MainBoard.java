@@ -4,17 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class MainBoard  {
+public class MainBoard {
 
 	JFrame gameJFrame;
 	ImageIcon znakZapytania;
@@ -28,6 +32,7 @@ public class MainBoard  {
 	int klikniecie;
 	int pierwszyZaznaczony;
 	public static int liczbaProb;
+	Timer timer;
 
 	MainBoard(int width, int height) {
 
@@ -65,11 +70,11 @@ public class MainBoard  {
 			panel.add(guziki[i]);
 		}
 
-		
 		klikniecie = 0;
 		pierwszyZaznaczony = -1;
 		liczbaProb = 0;
 		gra();
+		gameJFrame.add(timer(), BorderLayout.NORTH);
 		gameJFrame.add(panel, BorderLayout.CENTER);
 		gameJFrame.setVisible(true);
 	}
@@ -111,64 +116,85 @@ public class MainBoard  {
 		}
 	}
 
-	
 	private void endGame() {
 		if (!lista.contains(false)) {
+			timer.stop();
 			gameJFrame.setVisible(false);
-			new EndScreen();;
-		} 
+			new EndScreen();
+			;
+		}
 	}
 
 	ActionListener akcjaKlikania = new ActionListener() {
-	public void actionPerformed(ActionEvent event) {
-		if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
-			guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-			guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-			guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
-			
-			klikniecie++;
-			
-			/*new java.util.Timer().schedule(
-					new TimerTask() {
-						public void run() {
-							zaslonGuziki();
-							System.err.println("wykonuje siê");
-						}
-					}, 2000);*/
-			
-			
-			if (klikniecie == 1) {
+		public void actionPerformed(ActionEvent event) {
+			if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
+
+				klikniecie++;
+
+				/*
+				 * new java.util.Timer().schedule( new TimerTask() { public void run() {
+				 * zaslonGuziki(); } }, 2000);
+				 */
+
+				if (klikniecie == 1) {
+					pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
+					System.out.println("jestem tutaj 1 if");
+				}
+
+				if (klikniecie == 2 && guziki[pierwszyZaznaczony]
+						.getIcon() == guziki[Integer.parseInt(event.getActionCommand())].getIcon()) {
+					System.out.println("jestem tutaj 2 if");
+					lista.set(pierwszyZaznaczony, true);
+					lista.set(Integer.parseInt(event.getActionCommand()), true);
+					endGame();
+
+				}
+
+			} else {
+				zaslonGuziki();
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
+				klikniecie = 1;
 				pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
-				System.out.println("jestem tutaj 1 if");
-			}
-			
-			if (klikniecie == 2 && guziki[pierwszyZaznaczony].getIcon() == guziki[Integer.parseInt(event.getActionCommand())].getIcon()) {
-				System.out.println("jestem tutaj 2 if");
-				lista.set(pierwszyZaznaczony, true);
-				lista.set(Integer.parseInt(event.getActionCommand()), true);
-				endGame();
+				liczbaProb++;
+				System.out.println(liczbaProb);
 
 			}
-			
-		} else {
-			zaslonGuziki();
-			guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-			guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-			guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
-			klikniecie = 1;
-			pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
-			liczbaProb++;
-			System.out.println(liczbaProb);
-			
+
 		}
 
-	}
-
 	};
+
 	public void sprawdz() {
 		for (Boolean x : lista) {
 			System.out.println(x);
 		}
+	}
+
+	public JLabel timer() {
+		final JLabel timeLabel = new JLabel();
+		Date start = new Date();
+		final DateFormat timeFormat = new SimpleDateFormat("mm:ss");
+		ActionListener timerListener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Date date = new Date();
+				String time = timeFormat.format(new Date(date.getTime()-start.getTime()));
+				timeLabel.setText(time);
+			}
+		};
+		timer = new Timer(1000, timerListener);
+		
+		timer.setInitialDelay(0);
+		timer.start();
+		return timeLabel;
 	}
 
 }
