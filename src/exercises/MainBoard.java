@@ -1,5 +1,6 @@
 package exercises;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,7 @@ import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class MainBoard  {
@@ -43,7 +45,9 @@ public class MainBoard  {
 		gameJFrame.setSize(width * 100, height * 100);
 		gameJFrame.setLocationRelativeTo(null);
 		gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		gameJFrame.setLayout(new GridLayout(width, height));
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(width, height));
+		gameJFrame.setLayout(new BorderLayout());
 		gameJFrame.setJMenuBar(MemGame.menu(MemGame.menuListner()));
 
 		// zaciaganie obrazkow
@@ -58,7 +62,7 @@ public class MainBoard  {
 			guziki[i].setRolloverIcon(kreci¹³NaObrazku);
 			guziki[i].setActionCommand(Integer.toString(i));
 			guziki[i].addActionListener(akcjaKlikania);
-			gameJFrame.add(guziki[i]);
+			panel.add(guziki[i]);
 		}
 
 		
@@ -66,7 +70,7 @@ public class MainBoard  {
 		pierwszyZaznaczony = -1;
 		liczbaProb = 0;
 		gra();
-
+		gameJFrame.add(panel, BorderLayout.CENTER);
 		gameJFrame.setVisible(true);
 	}
 
@@ -102,29 +106,26 @@ public class MainBoard  {
 				guziki[i].setIcon(znakZapytania);
 				guziki[i].setRolloverIcon(kreci¹³NaObrazku);
 				guziki[i].setBorderPainted(true);
+				guziki[i].setEnabled(true);
 			}
 		}
 	}
 
 	
 	private void endGame() {
-		if (lista.contains(false)) {
-			System.out.println("jeszcze jest gra");
-			sprawdz();
-		} else {
-			System.out.println("koniec gry");
+		if (!lista.contains(false)) {
 			gameJFrame.setVisible(false);
-			new EndScreen();
-		}
+			new EndScreen();;
+		} 
 	}
 
 	ActionListener akcjaKlikania = new ActionListener() {
 	public void actionPerformed(ActionEvent event) {
 		if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
-
 			guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
 			guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
 			guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
+			
 			klikniecie++;
 			
 			/*new java.util.Timer().schedule(
