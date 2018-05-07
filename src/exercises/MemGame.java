@@ -6,6 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,7 +30,7 @@ public class MemGame {
 	public MemGame(){
 		
 		mainJFrame = new JFrame("Menu");
-		mainJFrame.setSize(800, 600);
+		mainJFrame.setSize(600, 400);
 		mainJFrame.setLocationRelativeTo(null);
 		mainJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainJFrame.setLayout(new BorderLayout());
@@ -59,17 +64,29 @@ public class MemGame {
 	
 	public static String wyniki() {
 		StringBuilder sb = null;
+		List<String> lista = new ArrayList<>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("wyniki.txt"));
 			sb = new StringBuilder();
 		    String str;
 		    while((str = br.readLine()) != null) {
-		    	sb.append(str);
-		    	sb.append("\n");
+		    	lista.add(str);
 		    }
 		    br.close();
 		} catch ( Exception e) {
 			e.printStackTrace();
+		}
+		
+		Collections.sort(lista, new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				return 1;
+			}
+		});
+		for(String x:lista) {
+			sb.append(x);
+	    	sb.append("\n");
 		}
 		
 		return sb.toString();

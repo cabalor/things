@@ -1,13 +1,19 @@
 package exercises;
 
 import java.awt.BorderLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.TimerTask;
 
@@ -25,6 +31,7 @@ public class MainBoard {
 	ImageIcon kreci뭄NaObrazku;
 	ImageIcon[] obrazki;
 	ImageIcon[] ukryteObrazki;
+	List<ImageIcon> ukryte = new ArrayList<>();
 	JButton[] guziki;
 	ArrayList<Boolean> lista = new ArrayList<>();
 	int size;
@@ -47,7 +54,7 @@ public class MainBoard {
 		obrazki = new ImageIcon[halfSize];
 
 		gameJFrame = new JFrame("JMemoryGame");
-		gameJFrame.setSize(width * 100, height * 100);
+		//gameJFrame.setSize(width * 100, height * 100);
 		gameJFrame.setLocationRelativeTo(null);
 		gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel panel = new JPanel();
@@ -57,9 +64,9 @@ public class MainBoard {
 
 		// zaciaganie obrazkow
 		for (int i = 0; i < halfSize; i++) {
-			obrazki[i] = new ImageIcon("obrazek" + Integer.toString(i + 1) + ".png");
+			obrazki[i] = new ImageIcon("obrazek" + Integer.toString(i + 1) + ".png", "dupa"+i);
 		}
-
+		
 		// generacja guzikow na planszy
 		for (int i = 0; i < guziki.length; i++) {
 			guziki[i] = new JButton(znakZapytania);
@@ -73,35 +80,34 @@ public class MainBoard {
 		klikniecie = 0;
 		pierwszyZaznaczony = -1;
 		liczbaProb = 0;
-		gra();
+		przygotowanieGuzikow();
 		gameJFrame.add(timer(), BorderLayout.NORTH);
 		gameJFrame.add(panel, BorderLayout.CENTER);
+		gameJFrame.pack();
 		gameJFrame.setVisible(true);
 	}
 
-	private void gra() {
-		ArrayList<Integer> listaObrazkow = new ArrayList<Integer>();
+	
+	private void przygotowanieGuzikow() {
+		ArrayList<Integer> listaPorz퉐kowa = new ArrayList<Integer>();
 		for (int i = 0; i < size; i++) {
-			listaObrazkow.add(i);
+			listaPorz퉐kowa.add(i);
 		}
 		Random rand = new Random();
 		for (int i = 0; i < halfSize; i++) {
-			int random = rand.nextInt(listaObrazkow.size());
-			System.out.println("i = " + i + " pozycja obrazka " + random);
-			ukryteObrazki[listaObrazkow.get(random)] = obrazki[i];
-			listaObrazkow.remove(random);
-			listaObrazkow.forEach(dupa -> System.out.println(dupa));
+			int random = rand.nextInt(listaPorz퉐kowa.size());
+			ukryteObrazki[listaPorz퉐kowa.get(random)] = obrazki[i];
+			listaPorz퉐kowa.remove(random);
+			
 
-			random = rand.nextInt(listaObrazkow.size());
-			System.out.println("i = " + i + " " + random);
-			ukryteObrazki[listaObrazkow.get(random)] = obrazki[i];
-			listaObrazkow.remove(random);
-			System.out.println("i = " + i + " pozycja obrazka " + random);
-			listaObrazkow.forEach(dupa -> System.out.println(dupa));
+			random = rand.nextInt(listaPorz퉐kowa.size());
+			ukryteObrazki[listaPorz퉐kowa.get(random)] = obrazki[i];
+			listaPorz퉐kowa.remove(random);
+			
 		}
+		
 		for (int i = 0; i < size; i++) {
 			lista.add(i, false);
-			System.out.println("i " + i + lista.get(i));
 		}
 	}
 
@@ -121,63 +127,50 @@ public class MainBoard {
 			timer.stop();
 			gameJFrame.setVisible(false);
 			new EndScreen();
-			;
 		}
 	}
 
 	ActionListener akcjaKlikania = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
 			if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
-				guziki[Integer.parseInt(event.getActionCommand())]
-						.setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-				guziki[Integer.parseInt(event.getActionCommand())]
-						.setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
 				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
 
 				klikniecie++;
-
-				/*
-				 * new java.util.Timer().schedule( new TimerTask() { public void run() {
-				 * zaslonGuziki(); } }, 2000);
-				 */
-
+				
+				  /*new java.util.Timer().schedule( new TimerTask() { public void run() {
+				  zaslonGuziki(); } }, 2000);*/
+				
 				if (klikniecie == 1) {
 					pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
 					System.out.println("jestem tutaj 1 if");
 				}
-
-				if (klikniecie == 2 && guziki[pierwszyZaznaczony]
-						.getIcon() == guziki[Integer.parseInt(event.getActionCommand())].getIcon()) {
-					System.out.println("jestem tutaj 2 if");
+				
+				if (klikniecie == 2 && guziki[pierwszyZaznaczony].getIcon().equals(guziki[Integer.parseInt(event.getActionCommand())].getIcon())) {
 					lista.set(pierwszyZaznaczony, true);
 					lista.set(Integer.parseInt(event.getActionCommand()), true);
 					endGame();
 
-				}
+				} /*else {
+					new java.util.Timer().schedule( new TimerTask() { public void run() {
+						  zaslonGuziki(); } }, 2000);
+				}*/
 
 			} else {
 				zaslonGuziki();
-				guziki[Integer.parseInt(event.getActionCommand())]
-						.setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-				guziki[Integer.parseInt(event.getActionCommand())]
-						.setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
 				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
 				klikniecie = 1;
 				pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
 				liczbaProb++;
-				System.out.println(liczbaProb);
 
 			}
 
 		}
 
 	};
-
-	public void sprawdz() {
-		for (Boolean x : lista) {
-			System.out.println(x);
-		}
-	}
 
 	public JLabel timer() {
 		final JLabel timeLabel = new JLabel();

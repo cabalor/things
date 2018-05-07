@@ -62,7 +62,7 @@ public class EndScreen {
         }
 		FileWriter fw = new FileWriter(file, true);
         BufferedWriter bw = new BufferedWriter(fw);
-        bw.write(name +": "+ wynik+". ");
+        bw.write(wynik +": "+ name+". ");
         bw.newLine();
         bw.close();
 		

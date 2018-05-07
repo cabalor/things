@@ -16,7 +16,7 @@ public class GameSelector {
 	
  	public GameSelector() {
  		selectorFrame = new JFrame("Menu");
- 		selectorFrame.setSize(300, 200);
+ 		//selectorFrame.setSize(300, 200);
  		selectorFrame.setLocationRelativeTo(null);
  		selectorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  		selectorFrame.setVisible(true);
@@ -54,7 +54,8 @@ public class GameSelector {
 		button4x3.addActionListener(buttonListner);
 		button4x4.addActionListener(buttonListner);
 		button5x4.addActionListener(buttonListner);
-    	
+		selectorFrame.pack();
+		selectorFrame.setVisible(true);
 	}
 	
 }
