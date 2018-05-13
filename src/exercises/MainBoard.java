@@ -1,13 +1,9 @@
 package exercises;
 
 import java.awt.BorderLayout;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,20 +22,22 @@ import javax.swing.Timer;
 
 public class MainBoard {
 
-	JFrame gameJFrame;
-	ImageIcon znakZapytania;
-	ImageIcon kreci¹³NaObrazku;
-	ImageIcon[] obrazki;
-	ImageIcon[] ukryteObrazki;
-	List<ImageIcon> ukryte = new ArrayList<>();
-	JButton[] guziki;
-	ArrayList<Boolean> lista = new ArrayList<>();
-	int size;
-	int halfSize;
-	int klikniecie;
-	int pierwszyZaznaczony;
+	private JFrame gameJFrame;
+	private ImageIcon znakZapytania;
+	private ImageIcon kreci¹³NaObrazku;
+	private List<MyImageIcon> ukryte = new ArrayList<>();
+	private JButton[] guziki;
+	private ArrayList<Boolean> lista = new ArrayList<>();
+	private int size;
+	private int halfSize;
+	private int klikniecie;
+	private int pierwszyZaznaczony;
 	public static int liczbaProb;
-	Timer timer;
+	public Timer zegarek;
+	java.util.Timer timer2 = new java.util.Timer();
+	public TimerTask tTask;
+	private boolean taskStarted;
+	public String czas;
 
 	MainBoard(int width, int height) {
 
@@ -49,12 +47,9 @@ public class MainBoard {
 		size = width * height;
 		znakZapytania = new ImageIcon("znakZapytania.png");
 		kreci¹³NaObrazku = new ImageIcon("flip.gif");
-		ukryteObrazki = new ImageIcon[size];
 		guziki = new JButton[size];
-		obrazki = new ImageIcon[halfSize];
-
 		gameJFrame = new JFrame("JMemoryGame");
-		//gameJFrame.setSize(width * 100, height * 100);
+		gameJFrame.setSize(width * 150, height * 150);
 		gameJFrame.setLocationRelativeTo(null);
 		gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel panel = new JPanel();
@@ -62,11 +57,11 @@ public class MainBoard {
 		gameJFrame.setLayout(new BorderLayout());
 		gameJFrame.setJMenuBar(MemGame.menu(MemGame.menuListner()));
 
-		// zaciaganie obrazkow
 		for (int i = 0; i < halfSize; i++) {
-			obrazki[i] = new ImageIcon("obrazek" + Integer.toString(i + 1) + ".png", "dupa"+i);
+			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(i + 1) + ".png", null, "" + i));
+			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(i + 1) + ".png", null, "" + i));
 		}
-		
+
 		// generacja guzikow na planszy
 		for (int i = 0; i < guziki.length; i++) {
 			guziki[i] = new JButton(znakZapytania);
@@ -83,29 +78,13 @@ public class MainBoard {
 		przygotowanieGuzikow();
 		gameJFrame.add(timer(), BorderLayout.NORTH);
 		gameJFrame.add(panel, BorderLayout.CENTER);
-		gameJFrame.pack();
 		gameJFrame.setVisible(true);
 	}
 
-	
 	private void przygotowanieGuzikow() {
-		ArrayList<Integer> listaPorz¹dkowa = new ArrayList<Integer>();
-		for (int i = 0; i < size; i++) {
-			listaPorz¹dkowa.add(i);
-		}
-		Random rand = new Random();
-		for (int i = 0; i < halfSize; i++) {
-			int random = rand.nextInt(listaPorz¹dkowa.size());
-			ukryteObrazki[listaPorz¹dkowa.get(random)] = obrazki[i];
-			listaPorz¹dkowa.remove(random);
-			
 
-			random = rand.nextInt(listaPorz¹dkowa.size());
-			ukryteObrazki[listaPorz¹dkowa.get(random)] = obrazki[i];
-			listaPorz¹dkowa.remove(random);
-			
-		}
-		
+		Collections.shuffle(ukryte);
+
 		for (int i = 0; i < size; i++) {
 			lista.add(i, false);
 		}
@@ -124,47 +103,54 @@ public class MainBoard {
 
 	private void endGame() {
 		if (!lista.contains(false)) {
-			timer.stop();
+			zegarek.stop();
 			gameJFrame.setVisible(false);
-			new EndScreen();
+			new EndScreen(czas);
 		}
 	}
 
 	ActionListener akcjaKlikania = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-			if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
-				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
 
+			/*if(taskStarted) {
+				timer2.purge(); 
+			}
+			taskStarted = false;*/
+			
+			if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
+				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
+				guziki[Integer.parseInt(event.getActionCommand())].setName(ukryte.get(Integer.parseInt(event.getActionCommand())).getValue());
+				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
+				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
+				liczbaProb++;
 				klikniecie++;
-				
-				  /*new java.util.Timer().schedule( new TimerTask() { public void run() {
-				  zaslonGuziki(); } }, 2000);*/
-				
+
 				if (klikniecie == 1) {
 					pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
-					System.out.println("jestem tutaj 1 if");
 				}
-				
-				if (klikniecie == 2 && guziki[pierwszyZaznaczony].getIcon().equals(guziki[Integer.parseInt(event.getActionCommand())].getIcon())) {
+
+				if (klikniecie == 2 && guziki[pierwszyZaznaczony].getName().equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) {
 					lista.set(pierwszyZaznaczony, true);
 					lista.set(Integer.parseInt(event.getActionCommand()), true);
 					endGame();
 
-				} /*else {
-					new java.util.Timer().schedule( new TimerTask() { public void run() {
-						  zaslonGuziki(); } }, 2000);
-				}*/
+				}
+
+				 /*if(klikniecie == 2 && !guziki[pierwszyZaznaczony].getName().equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) { timer2.schedule(tTask = new TimerTask() {
+				 public void run() { 
+					 zaslonGuziki(); 
+					 taskStarted = true; } 
+				 }, 2000); }*/
+				 
 
 			} else {
 				zaslonGuziki();
-				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
-				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryteObrazki[Integer.parseInt(event.getActionCommand())]);
+				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
+				guziki[Integer.parseInt(event.getActionCommand())].setName(ukryte.get(Integer.parseInt(event.getActionCommand())).getValue());
+				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
 				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
 				klikniecie = 1;
 				pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
-				liczbaProb++;
 
 			}
 
@@ -179,14 +165,14 @@ public class MainBoard {
 		ActionListener timerListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Date date = new Date();
-				String time = timeFormat.format(new Date(date.getTime()-start.getTime()));
-				timeLabel.setText(time);
+				czas = timeFormat.format(new Date(date.getTime() - start.getTime()));
+				timeLabel.setText(czas);
+				
 			}
 		};
-		timer = new Timer(1000, timerListener);
-		
-		timer.setInitialDelay(0);
-		timer.start();
+		zegarek = new Timer(1000, timerListener);
+		zegarek.setInitialDelay(0);
+		zegarek.start();
 		return timeLabel;
 	}
 
