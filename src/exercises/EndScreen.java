@@ -20,7 +20,7 @@ public class EndScreen {
 	JFrame endScreenJFrame;
 	private String nick;
 	
-	public EndScreen() {
+	public EndScreen(String czas) {
 		endScreenJFrame = new JFrame("wprowadz wynik");
 		endScreenJFrame.setSize(400, 300);
 		endScreenJFrame.setLocationRelativeTo(null);
@@ -44,7 +44,7 @@ public class EndScreen {
 			endScreenJFrame.setVisible(false);
 			MemGame.mainJFrame.setVisible(true);
 			try {
-				write(nick, String.valueOf(MainBoard.liczbaProb));
+				write(nick, String.valueOf(MainBoard.liczbaProb), czas);
 			} catch (IOException e1) {
 				System.err.println("cos poszlo nie tak z plikiem");
 				e1.printStackTrace();
@@ -55,14 +55,14 @@ public class EndScreen {
 	
 	}
 	
-	public void write(String name, String wynik) throws IOException {
+	public void write(String name, String wynik,String czas) throws IOException {
 		File file = new File("wyniki.txt");
 		if (!file.exists()) {
             file.createNewFile();
         }
 		FileWriter fw = new FileWriter(file, true);
         BufferedWriter bw = new BufferedWriter(fw);
-        bw.write(wynik +": "+ name+". ");
+        bw.write(wynik +" punktow zdobyl "+ name+". W  czasie "+ czas);
         bw.newLine();
         bw.close();
 		

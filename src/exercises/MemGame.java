@@ -1,6 +1,9 @@
 package exercises;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,46 +34,52 @@ public class MemGame {
 		
 		mainJFrame = new JFrame("Menu");
 		mainJFrame.setSize(600, 400);
+		mainJFrame.setBackground(Color.magenta);
 		mainJFrame.setLocationRelativeTo(null);
 		mainJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainJFrame.setLayout(new BorderLayout());
     	
-		JLabel napis = new JLabel("witaj w grze memory");
+		JLabel napis = new JLabel("Witaj w grze memory");
+		napis.setOpaque(false);
 		JButton button = new JButton("nowaGra");
+		button.setPreferredSize(new Dimension(150, 20));
+		button.setFont(new Font("Arial", Font.BOLD, 12));
 		JButton button2 = new JButton("wyjscie");
-	
-		
+		button2.setPreferredSize(new Dimension(150, 20));
+		button2.setFont(new Font("Arial", Font.BOLD, 12));
 		JPanel first = new JPanel();
 		first.add(napis);
 		JPanel second = new JPanel();
 		second.add(button);
 		JPanel third = new JPanel();
 		third.add(button2);
-		JPanel containerPanel = new JPanel(new GridLayout(3, 1));
-		containerPanel.add(first);
-		containerPanel.add(second);
-		containerPanel.add(third);
-		mainJFrame.add(containerPanel, BorderLayout.NORTH);
+		JPanel kontener = new JPanel(new GridLayout(3, 1));
+		kontener.add(first);
+		kontener.add(second);
+		kontener.add(third);
+		mainJFrame.add(kontener, BorderLayout.NORTH);
 		mainJFrame.setVisible(true);
         mainJFrame.setJMenuBar(menu(menuListner()));
         
         button.addActionListener(menuListner());
         button2.addActionListener(menuListner());
 		
-		
-		
 	}
 	
 	
-	public static String wyniki() {
+	private static String wyniki() {
 		StringBuilder sb = null;
 		List<String> lista = new ArrayList<>();
+		int liczbaLinii = 0;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("wyniki.txt"));
 			sb = new StringBuilder();
 		    String str;
-		    while((str = br.readLine()) != null) {
+		    while(((str = br.readLine()) != null)) {
+		    	if(liczbaLinii< 12) {
 		    	lista.add(str);
+		    	}
+		    	liczbaLinii++;
 		    }
 		    br.close();
 		} catch ( Exception e) {
@@ -81,7 +90,16 @@ public class MemGame {
 
 			@Override
 			public int compare(String o1, String o2) {
-				return 1;
+				if (o1 == null) {
+			        return -1;
+			    }
+			    if (o2 == null) {
+			        return 1;
+			    }
+			    if (o1.equals( o2 )) {
+			        return 0;
+			    }
+			    return o1.compareTo(o2);
 			}
 		});
 		for(String x:lista) {
@@ -98,15 +116,6 @@ public class MemGame {
 		new GameSelector();
 	}
 	
-	
-	
-	
-	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new MemGame());
-		
-		
-	}
 
 	public static JMenuBar menu(ActionListener listner) {
 		JMenuBar mainMenu = new JMenuBar();
@@ -122,6 +131,7 @@ public class MemGame {
         //rezygnacja.addActionListener(listner);
         return mainMenu;
 	}
+	
 	
 	public static ActionListener menuListner() {
 		return new ActionListener() {
@@ -143,8 +153,14 @@ public class MemGame {
 	public void rezygnuje() {
 		
 		
+	}
+	
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> new MemGame());
 		
 	}
+	
 	
 	
 }
