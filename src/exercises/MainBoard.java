@@ -34,7 +34,7 @@ public class MainBoard {
 	private int pierwszyZaznaczony;
 	public static int liczbaProb;
 	public Timer zegarek;
-	java.util.Timer timer2 = new java.util.Timer();
+	java.util.Timer timer2; /*= new java.util.Timer();*/
 	public TimerTask tTask;
 	private boolean taskStarted;
 	public String czas;
@@ -111,11 +111,14 @@ public class MainBoard {
 
 	ActionListener akcjaKlikania = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-
-			/*if(taskStarted) {
-				timer2.purge(); 
+			System.out.println("jestem tutaj");
+			System.out.println("wartos taskstarted "+ taskStarted);
+			if(taskStarted == true) {
+				System.out.println("cancel task");
+				taskStarted = false;
+				timer2.cancel();
 			}
-			taskStarted = false;*/
+			
 			
 			if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
 				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
@@ -133,15 +136,21 @@ public class MainBoard {
 					lista.set(pierwszyZaznaczony, true);
 					lista.set(Integer.parseInt(event.getActionCommand()), true);
 					endGame();
-
 				}
 
-				 /*if(klikniecie == 2 && !guziki[pierwszyZaznaczony].getName().equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) { timer2.schedule(tTask = new TimerTask() {
-				 public void run() { 
-					 zaslonGuziki(); 
-					 taskStarted = true; } 
-				 }, 2000); }*/
-				 
+				 if(klikniecie == 2 && !guziki[pierwszyZaznaczony].getName().equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) { 
+					
+					 
+					 timer2 = new java.util.Timer();
+					 timer2.schedule(tTask = new TimerTask() {
+						 public void run() { 
+							 zaslonGuziki();
+				 } 
+				 }, 2000);
+					 taskStarted = true; 
+					 System.out.println("dupa dupa");
+				 }
+					 
 
 			} else {
 				zaslonGuziki();
@@ -175,5 +184,5 @@ public class MainBoard {
 		zegarek.start();
 		return timeLabel;
 	}
-
+	
 }
