@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 public class MyImageIcon extends ImageIcon {
 
 	private String value;
-
+	
 	MyImageIcon(String image, String description, String value){
 	       super(image, description);
 	       this.value = value;
@@ -45,9 +45,5 @@ public class MyImageIcon extends ImageIcon {
 			return false;
 		return true;
 	}
-
-	
-	
-	
 	
 }

@@ -28,13 +28,14 @@ public class MainBoard {
 	private List<MyImageIcon> ukryte = new ArrayList<>();
 	private JButton[] guziki;
 	private ArrayList<Boolean> lista = new ArrayList<>();
+	private ArrayList<Integer> randomoweObrazki = new ArrayList<>() ;
 	private int size;
 	private int halfSize;
 	private int klikniecie;
 	private int pierwszyZaznaczony;
 	public static int liczbaProb;
 	public Timer zegarek;
-	java.util.Timer timer2; /*= new java.util.Timer();*/
+	java.util.Timer timer2; 
 	public TimerTask tTask;
 	private boolean taskStarted;
 	public String czas;
@@ -56,12 +57,17 @@ public class MainBoard {
 		panel.setLayout(new GridLayout(width, height));
 		gameJFrame.setLayout(new BorderLayout());
 		gameJFrame.setJMenuBar(MemGame.menu(MemGame.menuListner()));
-
+		klikniecie = 0;
+		pierwszyZaznaczony = -1;
+		liczbaProb = 0;
+		obrazki();
+		
 		for (int i = 0; i < halfSize; i++) {
-			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(i + 1) + ".png", null, "" + i));
-			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(i + 1) + ".png", null, "" + i));
+			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(randomoweObrazki.get(i)) + ".png", null, "" + i));
+			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(randomoweObrazki.get(i)) + ".png", null, "" + i));
 		}
 
+		
 		// generacja guzikow na planszy
 		for (int i = 0; i < guziki.length; i++) {
 			guziki[i] = new JButton(znakZapytania);
@@ -72,9 +78,7 @@ public class MainBoard {
 			panel.add(guziki[i]);
 		}
 
-		klikniecie = 0;
-		pierwszyZaznaczony = -1;
-		liczbaProb = 0;
+
 		przygotowanieGuzikow();
 		gameJFrame.add(timer(), BorderLayout.NORTH);
 		gameJFrame.add(panel, BorderLayout.CENTER);
@@ -111,14 +115,11 @@ public class MainBoard {
 
 	ActionListener akcjaKlikania = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-			System.out.println("jestem tutaj");
-			System.out.println("wartos taskstarted "+ taskStarted);
+			
 			if(taskStarted == true) {
-				System.out.println("cancel task");
 				taskStarted = false;
 				timer2.cancel();
 			}
-			
 			
 			if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
 				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
@@ -148,7 +149,6 @@ public class MainBoard {
 				 } 
 				 }, 2000);
 					 taskStarted = true; 
-					 System.out.println("dupa dupa");
 				 }
 					 
 
@@ -183,6 +183,25 @@ public class MainBoard {
 		zegarek.setInitialDelay(0);
 		zegarek.start();
 		return timeLabel;
+	}
+	
+	private void obrazki(){
+		for (int i = 0; i < halfSize; i++) {
+			int k = losuj();
+			System.out.println("zmianna i "+i);
+			if(randomoweObrazki.contains(k)) {
+			System.out.println("nie dodajemy "+k);
+			i--;
+			System.out.println("zmianna i "+ i);
+			} else {
+				randomoweObrazki.add(k);
+				System.out.println("dodajemy "+ k);
+			}
+		}
+		
+	}
+	private int losuj() {
+		return 1 + (int)(Math.random() * ((9 - 1) + 1));
 	}
 	
 }
