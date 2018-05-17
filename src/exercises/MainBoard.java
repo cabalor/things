@@ -39,6 +39,7 @@ public class MainBoard {
 	public TimerTask tTask;
 	private boolean taskStarted;
 	public String czas;
+	public static final int liczbaObrazków = 9;
 
 	MainBoard(int width, int height) {
 
@@ -201,7 +202,7 @@ public class MainBoard {
 		
 	}
 	private int losuj() {
-		return 1 + (int)(Math.random() * ((9 - 1) + 1));
+		return 1 + (int)(Math.random() * ((liczbaObrazków - 1) + 1));
 	}
 	
 }
