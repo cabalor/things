@@ -24,7 +24,7 @@ public class MainBoard {
 
 	private JFrame gameJFrame;
 	private ImageIcon znakZapytania;
-	private ImageIcon kreci像NaObrazku;
+	private ImageIcon animowanyGif;
 	private List<MyImageIcon> ukryte = new ArrayList<>();
 	private JButton[] guziki;
 	private ArrayList<Boolean> lista = new ArrayList<>();
@@ -39,7 +39,7 @@ public class MainBoard {
 	public TimerTask tTask;
 	private boolean taskStarted;
 	public String czas;
-	public static final int liczbaObrazk闚 = 9;
+	public static final int liczbaObrazkow = 12;
 
 	MainBoard(int width, int height) {
 
@@ -48,7 +48,7 @@ public class MainBoard {
 		halfSize = (width * height) / 2;
 		size = width * height;
 		znakZapytania = new ImageIcon("znakZapytania.png");
-		kreci像NaObrazku = new ImageIcon("flip.gif");
+		animowanyGif = new ImageIcon("flip.gif");
 		guziki = new JButton[size];
 		gameJFrame = new JFrame("JMemoryGame");
 		gameJFrame.setSize(width * 150, height * 150);
@@ -69,11 +69,10 @@ public class MainBoard {
 		}
 
 		
-		// generacja guzikow na planszy
 		for (int i = 0; i < guziki.length; i++) {
 			guziki[i] = new JButton(znakZapytania);
 			guziki[i].setContentAreaFilled(false);
-			guziki[i].setRolloverIcon(kreci像NaObrazku);
+			guziki[i].setRolloverIcon(animowanyGif);
 			guziki[i].setActionCommand(Integer.toString(i));
 			guziki[i].addActionListener(akcjaKlikania);
 			panel.add(guziki[i]);
@@ -99,7 +98,7 @@ public class MainBoard {
 		for (int i = 0; i < size; i++) {
 			if (!lista.get(i)) {
 				guziki[i].setIcon(znakZapytania);
-				guziki[i].setRolloverIcon(kreci像NaObrazku);
+				guziki[i].setRolloverIcon(animowanyGif);
 				guziki[i].setBorderPainted(true);
 				guziki[i].setEnabled(true);
 			}
@@ -189,20 +188,16 @@ public class MainBoard {
 	private void obrazki(){
 		for (int i = 0; i < halfSize; i++) {
 			int k = losuj();
-			System.out.println("zmianna i "+i);
 			if(randomoweObrazki.contains(k)) {
-			System.out.println("nie dodajemy "+k);
 			i--;
-			System.out.println("zmianna i "+ i);
 			} else {
 				randomoweObrazki.add(k);
-				System.out.println("dodajemy "+ k);
 			}
 		}
 		
 	}
 	private int losuj() {
-		return 1 + (int)(Math.random() * ((liczbaObrazk闚 - 1) + 1));
+		return 1 + (int)(Math.random() * ((liczbaObrazkow - 1) + 1));
 	}
 	
 }

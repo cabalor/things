@@ -27,7 +27,7 @@ public class EndScreen {
 		endScreenJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		endScreenJFrame.setVisible(true);
 		JTextField textField = new JTextField();
-		JLabel label = new JLabel("Twój wynik to "+ String.valueOf(MainBoard.liczbaProb)+ "zdobyty w czasie "+ czas +". Wpisz nick'a");
+		JLabel label = new JLabel("Twoj wynik to "+ String.valueOf(MainBoard.liczbaProb)+ " zdobyty w czasie "+ czas +". \n Wpisz nick'a");
 		textField.setPreferredSize(new Dimension(100, 40));
 		JButton endButton = new JButton("zapisz wynik");
 		endScreenJFrame.setLayout(new FlowLayout());
@@ -62,7 +62,7 @@ public class EndScreen {
         }
 		FileWriter fw = new FileWriter(file, true);
         BufferedWriter bw = new BufferedWriter(fw);
-        bw.write(wynik +" ruchów w czasie "+ czas +" potrzebowa³ "+ name);
+        bw.write(wynik +" ruchow w czasie "+ czas +" potrzebowal "+ name);
         bw.newLine();
         bw.close();
 		
