@@ -1,4 +1,4 @@
-package exercises;
+package MemoGame;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -40,7 +40,6 @@ public class EndScreen {
 			
 			public void actionPerformed(ActionEvent e) {
 			nick = textField.getText();
-			System.out.println(nick);
 			endScreenJFrame.setVisible(false);
 			MemGame.mainJFrame.setVisible(true);
 			try {

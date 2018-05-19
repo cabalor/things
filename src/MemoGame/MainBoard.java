@@ -1,4 +1,4 @@
-package exercises;
+package MemoGame;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -28,14 +28,14 @@ public class MainBoard {
 	private List<MyImageIcon> ukryte = new ArrayList<>();
 	private JButton[] guziki;
 	private ArrayList<Boolean> lista = new ArrayList<>();
-	private ArrayList<Integer> randomoweObrazki = new ArrayList<>() ;
+	private ArrayList<Integer> randomoweObrazki = new ArrayList<>();
 	private int size;
 	private int halfSize;
 	private int klikniecie;
 	private int pierwszyZaznaczony;
 	public static int liczbaProb;
 	public Timer zegarek;
-	java.util.Timer timer2; 
+	java.util.Timer timer2;
 	public TimerTask tTask;
 	private boolean taskStarted;
 	public String czas;
@@ -62,13 +62,12 @@ public class MainBoard {
 		pierwszyZaznaczony = -1;
 		liczbaProb = 0;
 		obrazki();
-		
+
 		for (int i = 0; i < halfSize; i++) {
 			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(randomoweObrazki.get(i)) + ".png", null, "" + i));
 			ukryte.add(new MyImageIcon("obrazek" + Integer.toString(randomoweObrazki.get(i)) + ".png", null, "" + i));
 		}
 
-		
 		for (int i = 0; i < guziki.length; i++) {
 			guziki[i] = new JButton(znakZapytania);
 			guziki[i].setContentAreaFilled(false);
@@ -77,7 +76,6 @@ public class MainBoard {
 			guziki[i].addActionListener(akcjaKlikania);
 			panel.add(guziki[i]);
 		}
-
 
 		przygotowanieGuzikow();
 		gameJFrame.add(timer(), BorderLayout.NORTH);
@@ -115,16 +113,19 @@ public class MainBoard {
 
 	ActionListener akcjaKlikania = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-			
-			if(taskStarted == true) {
+
+			if (taskStarted == true) {
 				taskStarted = false;
 				timer2.cancel();
 			}
-			
+
 			if (klikniecie < 2 && guziki[Integer.parseInt(event.getActionCommand())].getIcon() == znakZapytania) {
-				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
-				guziki[Integer.parseInt(event.getActionCommand())].setName(ukryte.get(Integer.parseInt(event.getActionCommand())).getValue());
-				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setName(ukryte.get(Integer.parseInt(event.getActionCommand())).getValue());
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setRolloverIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
 				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
 				liczbaProb++;
 				klikniecie++;
@@ -133,30 +134,33 @@ public class MainBoard {
 					pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
 				}
 
-				if (klikniecie == 2 && guziki[pierwszyZaznaczony].getName().equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) {
+				if (klikniecie == 2 && guziki[pierwszyZaznaczony].getName()
+						.equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) {
 					lista.set(pierwszyZaznaczony, true);
 					lista.set(Integer.parseInt(event.getActionCommand()), true);
 					endGame();
 				}
 
-				 if(klikniecie == 2 && !guziki[pierwszyZaznaczony].getName().equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) { 
-					
-					 
-					 timer2 = new java.util.Timer();
-					 timer2.schedule(tTask = new TimerTask() {
-						 public void run() { 
-							 zaslonGuziki();
-				 } 
-				 }, 2000);
-					 taskStarted = true; 
-				 }
-					 
+				if (klikniecie == 2 && !guziki[pierwszyZaznaczony].getName()
+						.equals(guziki[Integer.parseInt(event.getActionCommand())].getName())) {
+
+					timer2 = new java.util.Timer();
+					timer2.schedule(tTask = new TimerTask() {
+						public void run() {
+							zaslonGuziki();
+						}
+					}, 2000);
+					taskStarted = true;
+				}
 
 			} else {
 				zaslonGuziki();
-				guziki[Integer.parseInt(event.getActionCommand())].setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
-				guziki[Integer.parseInt(event.getActionCommand())].setName(ukryte.get(Integer.parseInt(event.getActionCommand())).getValue());
-				guziki[Integer.parseInt(event.getActionCommand())].setRolloverIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setName(ukryte.get(Integer.parseInt(event.getActionCommand())).getValue());
+				guziki[Integer.parseInt(event.getActionCommand())]
+						.setRolloverIcon(ukryte.get(Integer.parseInt(event.getActionCommand())));
 				guziki[Integer.parseInt(event.getActionCommand())].setBorderPainted(false);
 				klikniecie = 1;
 				pierwszyZaznaczony = Integer.parseInt(event.getActionCommand());
@@ -176,7 +180,7 @@ public class MainBoard {
 				Date date = new Date();
 				czas = timeFormat.format(new Date(date.getTime() - start.getTime()));
 				timeLabel.setText(czas);
-				
+
 			}
 		};
 		zegarek = new Timer(1000, timerListener);
@@ -184,20 +188,21 @@ public class MainBoard {
 		zegarek.start();
 		return timeLabel;
 	}
-	
-	private void obrazki(){
+
+	private void obrazki() {
 		for (int i = 0; i < halfSize; i++) {
 			int k = losuj();
-			if(randomoweObrazki.contains(k)) {
-			i--;
+			if (randomoweObrazki.contains(k)) {
+				i--;
 			} else {
 				randomoweObrazki.add(k);
 			}
 		}
-		
+
 	}
+
 	private int losuj() {
-		return 1 + (int)(Math.random() * ((liczbaObrazkow - 1) + 1));
+		return 1 + (int) (Math.random() * ((liczbaObrazkow - 1) + 1));
 	}
-	
+
 }

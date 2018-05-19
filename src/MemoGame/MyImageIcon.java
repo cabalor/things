@@ -1,4 +1,4 @@
-package exercises;
+package MemoGame;
 
 import java.awt.Image;
 
