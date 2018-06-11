@@ -1,8 +1,38 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="sample.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane alignment="center" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+
+    <Button onAction="#onClickButton" text="Hello" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    <Label fx:id="myLabel" text="1" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <MenuBar fx:id="menubar" GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <Menu text="zakoncz">
+            <MenuItem fx:id="exit" onAction="#exit" text="exit" />
+        </Menu>
+        <Menu onAction="#zmiana" text="fonty">
+            <RadioMenuItem fx:id="font1" text="font1" /> <!--onAction="#onChange1"-->
+            <RadioMenuItem fx:id="font2" text="font2" />   <!--onAction="#onChange2"-->
+            <RadioMenuItem fx:id="font3" text="font3" /> <!--onAction="#onChange3"-->
+        </Menu>
+    </MenuBar>
+    <TextArea fx:id="textArea" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
 </GridPane>
