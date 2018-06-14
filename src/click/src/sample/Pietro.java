@@ -1,10 +1,10 @@
-package sample;
+package click;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import java.util.ArrayList;
 
-import static sample.MainController.game;
+import static click.MainController.game;
 
 public class Pietro {
 

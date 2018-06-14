@@ -1,8 +1,9 @@
-package sample;
+package click;
 
-import static sample.MainController.game;
-import static sample.MainController.klikacz;
-import static sample.Pietro.checkButony;
+import static click.MainController.addBtn;
+import static click.MainController.game;
+import static click.MainController.klikacz;
+import static click.Pietro.checkButony;
 
 public class Game {
 
@@ -51,6 +52,9 @@ public class Game {
                 btn.setMulti(btn.getMulti() + 0.5);
                 btn.setText(String.valueOf(Double.valueOf(btn.getText()).intValue() * btn.getMulti()));
                 klikacz.setText("Dodaj kase " + game.getCurrentIincome());
+                if(game.getScore()<addBtn.getUpgrade()){
+                    addBtn.setDisable(true);
+                }
                 checkButony();
             });
         }

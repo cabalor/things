@@ -1,4 +1,4 @@
-package sample;
+package click;
 
 
 public class Guziki {

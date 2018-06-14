@@ -1,4 +1,4 @@
-package sample;
+package click;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -29,8 +29,8 @@ public class GameController {
         try {
             Parent gameRoot = FXMLLoader.load(getClass().getResource("main.fxml"));
             Scene gameScene = new Scene(gameRoot, 800, 600);
-            Main.primaryStage.setScene(gameScene);
-            Main.primaryStage.show();
+            MainClick.primaryStage.setScene(gameScene);
+            MainClick.primaryStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();

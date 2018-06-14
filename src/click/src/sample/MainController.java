@@ -1,4 +1,4 @@
-package sample;
+package click;
 
 
 import javafx.application.Platform;
@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
-import static sample.Pietro.checkButony;
+import static click.Pietro.checkButony;
 
 
 public class MainController {
@@ -23,7 +23,7 @@ public class MainController {
 
     private int row = 2;
 
-    int maxRows = 16;
+    int maxRows = 15;
 
     public static AddButton addBtn;
 
@@ -55,8 +55,8 @@ public class MainController {
             try {
                 Parent gameRoot = FXMLLoader.load(getClass().getResource("main.fxml"));
                 Scene scene = new Scene(gameRoot, 800, 600);
-                Main.primaryStage.setScene(scene);
-                Main.primaryStage.show();
+                MainClick.primaryStage.setScene(scene);
+                MainClick.primaryStage.show();
                 game.setScore(0);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -76,16 +76,16 @@ public class MainController {
         gp.setVgap(5);
 
         menuBar.prefWidthProperty().bind(
-                Main.primaryStage.widthProperty()
+                MainClick.primaryStage.widthProperty()
         );
         gp.add(menuBar, 0, 0);
 
-
+        gp.add(miasta(gp), 0,1);
         gp.add(guziki(gp), 0, 2);
         root.getChildren().add(gp);
 
-        Main.primaryStage.setScene(gameScene);
-        Main.primaryStage.show();
+        MainClick.primaryStage.setScene(gameScene);
+        MainClick.primaryStage.show();
 
 
     }
@@ -124,8 +124,10 @@ public class MainController {
             game.setScore(game.getScore() - addBtn.getUpgrade());
             kasa.setText("masz " + game.getScore() + " kasy");
             addBtn.setUpgrade(addBtn.getUpgrade() + 500);
-            addBtn.setDisable(true);
             addBtn.setText("Dodaj pietro za " + addBtn.getUpgrade());
+            if(game.getScore()<addBtn.getUpgrade()){
+                addBtn.setDisable(true);
+            }
             checkButony();
         });
 
@@ -151,10 +153,10 @@ public class MainController {
         warszawa.setText("Warszawa");
         warszawa.setMaxWidth(Double.MAX_VALUE);
         Button londyn = new Button();
-        londyn.setText("Warszawa");
+        londyn.setText("Londyn");
         londyn.setMaxWidth(Double.MAX_VALUE);
         Button tokio = new Button();
-        tokio.setText("Warszawa");
+        tokio.setText("Tokio");
         tokio.setMaxWidth(Double.MAX_VALUE);
 
         HBox buttonbox = new HBox(5);
