@@ -1,6 +1,9 @@
-package click;
+package sample;
 
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,19 +14,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
-import static click.Pietro.checkButony;
+import static sample.Pietro.checkButony;
 
 
 public class MainController {
 
-    private int dodanaKasa;
+    public static int row = 2;
+
+    private int maxRows = 15;
 
     public static Game game = new Game();
-
-    private int row = 2;
-
-    int maxRows = 15;
 
     public static AddButton addBtn;
 
@@ -33,12 +35,17 @@ public class MainController {
 
     public static Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
+    public int getRow() {
+        return row;
+    }
 
-    @FXML
-    private Label kaska;
-
+    public void setRow(int row) {
+        this.row = row + 1;
+    }
 
     public void startButton() {
+
+        Klikacz();
 
         Group root = new Group();
 
@@ -63,7 +70,6 @@ public class MainController {
             }
         });
 
-
         exit.setOnAction(e -> Platform.exit()
         );
 
@@ -80,28 +86,29 @@ public class MainController {
         );
         gp.add(menuBar, 0, 0);
 
-        gp.add(miasta(gp), 0,1);
+        gp.add(miasta(gp), 0, 1);
         gp.add(guziki(gp), 0, 2);
         root.getChildren().add(gp);
 
         MainClick.primaryStage.setScene(gameScene);
         MainClick.primaryStage.show();
 
-
     }
 
+
     public int checkRows() {
-        System.out.println("przed dodaniem " + getRow());
         if (getRow() >= maxRows) {
             alert.setTitle("alert");
             alert.setContentText("maxymalna liczba pieter osiagnieta");
             alert.showAndWait();
+            addBtn.setDisable(true);
         } else {
             setRow(getRow());
             return getRow();
         }
-        return getRow();
+        return -1;
     }
+
 
     public HBox guziki(GridPane gp) {
         addBtn = new AddButton(50);
@@ -114,20 +121,16 @@ public class MainController {
 
         HBox buttonbox = new HBox(5);
 
-        if (getRow() > 16) {
-            addBtn.isDisable();
-        }
-
-
         addBtn.setOnAction(e -> {
             gp.add(Pietro.pietro(), 0, checkRows());
             game.setScore(game.getScore() - addBtn.getUpgrade());
             kasa.setText("masz " + game.getScore() + " kasy");
-            addBtn.setUpgrade(addBtn.getUpgrade() + 500);
+            addBtn.setUpgrade((int)(addBtn.getUpgrade() * game.getPietroMulti()));
             addBtn.setText("Dodaj pietro za " + addBtn.getUpgrade());
-            if(game.getScore()<addBtn.getUpgrade()){
+            if (game.getScore() < addBtn.getUpgrade()) {
                 addBtn.setDisable(true);
             }
+            game.setPietroMulti(game.getPietroMulti()+0.5);
             checkButony();
         });
 
@@ -148,7 +151,8 @@ public class MainController {
         return buttonbox;
     }
 
-    public HBox miasta(GridPane gp){
+
+    public HBox miasta(GridPane gp) {
         Button warszawa = new Button();
         warszawa.setText("Warszawa");
         warszawa.setMaxWidth(Double.MAX_VALUE);
@@ -160,52 +164,26 @@ public class MainController {
         tokio.setMaxWidth(Double.MAX_VALUE);
 
         HBox buttonbox = new HBox(5);
-
         buttonbox.getChildren().addAll(warszawa, londyn, tokio);
         buttonbox.setAlignment(Pos.CENTER);
+
         return buttonbox;
     }
-
 
     @FXML
     public void initialize() {
     }
 
-
-    public Game getGame() {
-        return game;
+    private void Klikacz() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+            naliczaj();
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    private void naliczaj(){
+        game.setScore(game.getScore() + game.getCurrentIincome());
+        kasa.setText("masz " + game.getScore() + " kasy");
     }
-
-    public Label getKaska() {
-        return kaska;
-    }
-
-    public void setKaska(Label kaska) {
-        this.kaska = kaska;
-    }
-
-    public int getDodanaKasa() {
-        return dodanaKasa;
-    }
-
-    public void setDodanaKasa(int dodanaKasa) {
-        this.dodanaKasa = dodanaKasa;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row + 1;
-    }
-
-
 }
-
-
-
