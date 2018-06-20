@@ -1,5 +1,7 @@
 package sample;
 
+import java.util.List;
+
 import static sample.MainController.addBtn;
 import static sample.MainController.game;
 import static sample.MainController.klikacz;
