@@ -17,7 +17,7 @@ public class MainClick extends Application {
 
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
         Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add("click/style.css");
+        scene.getStylesheets().add("sample/style.css");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
