@@ -36,6 +36,8 @@ public class Pietro {
             for (ClickButton but : buttony) {
                 if(Double.valueOf(but.getText()).intValue() > game.getScore()){
                     but.setDisable(true);
+                }else {
+                    but.setDisable(false);
                 }
             }
         }

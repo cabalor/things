@@ -14,12 +14,25 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static sample.Pietro.checkButony;
 
 
 public class MainController {
+
+
+    public static List<HBox> hboxy = new ArrayList<>();
+
+    public static List<HBox> hboxy2 = new ArrayList<>();
+
+    public static List<HBox> hboxy3 = new ArrayList<>();
+
+    public static int miasto;
 
     public static int row = 2;
 
@@ -45,6 +58,8 @@ public class MainController {
 
     public void startButton() {
 
+        miasto =1;
+
         Klikacz();
 
         Group root = new Group();
@@ -65,6 +80,8 @@ public class MainController {
                 MainClick.primaryStage.setScene(scene);
                 MainClick.primaryStage.show();
                 game.setScore(0);
+                game.setCurrentIincome(10);
+                game.setMnoznik(1);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -122,7 +139,9 @@ public class MainController {
         HBox buttonbox = new HBox(5);
 
         addBtn.setOnAction(e -> {
-            gp.add(Pietro.pietro(), 0, checkRows());
+            dodaj(Pietro.pietro());
+            zaladuj(gp);
+            //gp.add(Pietro.pietro(), 0, checkRows());
             game.setScore(game.getScore() - addBtn.getUpgrade());
             kasa.setText("masz " + game.getScore() + " kasy");
             addBtn.setUpgrade((int)(addBtn.getUpgrade() * game.getPietroMulti()));
@@ -156,12 +175,19 @@ public class MainController {
         Button warszawa = new Button();
         warszawa.setText("Warszawa");
         warszawa.setMaxWidth(Double.MAX_VALUE);
+        warszawa.setOnAction(e -> miasto=1);
+
         Button londyn = new Button();
         londyn.setText("Londyn");
         londyn.setMaxWidth(Double.MAX_VALUE);
+        londyn.setOnAction(e -> miasto =2);
         Button tokio = new Button();
         tokio.setText("Tokio");
         tokio.setMaxWidth(Double.MAX_VALUE);
+        tokio.setOnAction(e -> {
+            miasto=3;
+            System.out.println(miasto);
+        });
 
         HBox buttonbox = new HBox(5);
         buttonbox.getChildren().addAll(warszawa, londyn, tokio);
@@ -175,8 +201,9 @@ public class MainController {
     }
 
     private void Klikacz() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), ev -> {
             naliczaj();
+            checkButony();
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -186,4 +213,37 @@ public class MainController {
         game.setScore(game.getScore() + game.getCurrentIincome());
         kasa.setText("masz " + game.getScore() + " kasy");
     }
+
+    private void dodaj(HBox box){
+       if(miasto ==1){
+           hboxy.add(box);
+           System.out.println("pietro dodane");
+       } else if(miasto==2){
+           hboxy2.add(box);
+       } else {
+           hboxy3.add(box);
+       }
+    }
+
+
+    private void zaladuj(GridPane gp) {
+        if(miasto ==1){
+
+            for (int i=0,j=3; i<hboxy.size();i++,j++){
+                gp.add(hboxy.get(i), 0, j);
+                System.out.println("pietro zaladowane");
+            }
+
+        } else if(miasto==2){
+            for(HBox box: hboxy2){
+                gp.add(box, 0, checkRows());
+            }
+        } else {
+            for(HBox box: hboxy2){
+                gp.add(box, 0, checkRows());
+            }
+        }
+    }
+
+
 }
