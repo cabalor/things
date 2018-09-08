@@ -1,4 +1,4 @@
-package exercises;
+package MemoGame;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -25,7 +25,7 @@ public class GameSelector {
 		JButton button4x4 = new JButton("4x4");
 		JButton button5x4 = new JButton("5x4");
 		JPanel kontener = new JPanel(new BorderLayout());
-		JLabel napis = new JLabel("Wybierze wielkoœæ planszy");
+		JLabel napis = new JLabel("Wybierze wielkosc planszy");
 		JPanel buttonPanel = new JPanel();
 		JPanel top = new JPanel();
 		

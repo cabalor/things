@@ -1,4 +1,4 @@
-package exercises;
+package MemoGame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,7 +34,6 @@ public class MemGame {
 		
 		mainJFrame = new JFrame("Menu");
 		mainJFrame.setSize(600, 400);
-		mainJFrame.setBackground(Color.magenta);
 		mainJFrame.setLocationRelativeTo(null);
 		mainJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainJFrame.setLayout(new BorderLayout());
