@@ -128,8 +128,8 @@ public class Main1 {
         }
         System.out.println(sccoreA + "\n" + sccoreB);*/
         
-        sccoreA = (int) Arrays.stream(app).filter(app-> app+a>=s && app+a<=t).count();
-        sccoreB = (int) Arrays.stream(ora).filter(ora-> ora+b>=s && ora+b<=t).count();
+        //sccoreA = (int) Arrays.stream(app).filter(app-> app+a>=s && app+a<=t).count();
+        //sccoreB = (int) Arrays.stream(ora).filter(ora-> ora+b>=s && ora+b<=t).count();
         
         System.out.println(sccoreA + "\n" + sccoreB);
     }
