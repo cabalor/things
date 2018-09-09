@@ -9,6 +9,19 @@ public class BuilderMain {
 		System.out.println(auto.toString());
 		
 
+		Vechicle bick = new Bicycle();
+		
+		Vechicle boat = new Boat();
+		
+		System.out.println("bicycle: "+ bick.tryToFly());
+		
+
+		System.out.println("boat: "+ boat.tryToFly());
+		
+		bick.setFlying(new CanSwim());
+		
+
+		System.out.println("bicycle: "+ bick.tryToFly());
 	}
 
 }
