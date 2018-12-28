@@ -35,21 +35,14 @@ public static void main(String[] args) throws Exception{
             while(!done) {
                 log("socket nasluchuje");
                 clientScocket = welcomeSocket.accept();
-                //log("klient has connected");
-                //log("info klienta " + getClientInfo(clientScocket));
 
                 BufferedReader br = new BufferedReader(new InputStreamReader(clientScocket.getInputStream()));
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(clientScocket.getOutputStream()));
 
-                //InputStream inputStream = clientScocket.getInputStream();
-                //OutputStream outputStream = clientScocket.getOutputStream();
-                //Scanner scn = new Scanner(inputStream);
-
-
                 log("service start ");
 
                 String hostFiles = br.readLine();
-                log(hostFiles);
+                //log(hostFiles);
                 switch(hostFiles){
                     case "lista":
                         sendFileList(clientScocket);
@@ -68,8 +61,8 @@ public static void main(String[] args) throws Exception{
             int portEnd = things.indexOf(';');
             int portStart = things.indexOf(':');
             String port = things.substring(portStart+1, portEnd);
+            mapa.remove(port);
             mapa.put(port, things.substring(portEnd+1));
-            log(mapa.keySet().size()+"");
     }
 
     private static String getClientInfo(Socket clientScocket){
@@ -78,7 +71,19 @@ public static void main(String[] args) throws Exception{
     int port = clientScocket.getPort();
 
     return clientInfo + " "+port;
-}
+    }
+
+    private static String getFileName(String key){
+        String[] stringArr = key.split(";");
+        String str = "";
+        for(int i =0; i<stringArr.length;i++){
+            if(i%2==0){
+                str = str + stringArr[i]+" ";
+            }
+        }
+        return str;
+    }
+
 
     private static void sendFileList(Socket clientScocket){
         try {
@@ -89,7 +94,10 @@ public static void main(String[] args) throws Exception{
 
             //key.forEach(k -> sb.append("Port:"+k+";"+mapa.get(k)));
             key.forEach(k -> {
-               String line =  "Port:"+k+";"+mapa.get(k);
+                String line = "";
+                if(!k.equals(String.valueOf(clientScocket.getPort()))) {
+                line = "Port:" + k + ";" + getFileName(mapa.get(k));
+            }
                 try {
                     bw.write(line);
                     bw.newLine();
@@ -111,7 +119,6 @@ public static void main(String[] args) throws Exception{
 
 
     }
-
 
 }
 

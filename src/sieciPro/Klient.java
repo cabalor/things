@@ -7,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.rmi.server.ExportException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -37,17 +36,17 @@ public class Klient {
         Thread serverThread = new Thread(() -> {
             try {
                 serverClient(PORT);
-            } catch (IOException e){
-                log("problem w wtku "+e);
+            } catch (IOException e) {
+                log("problem w wtku " + e);
             }
         });
         serverThread.start();
 
-        //ServerSocket welcomeSocket = new ServerSocket(PORT);
         Scanner scn = new Scanner(System.in);
         boolean exit = false;
         while (!exit) {
-            log("witam w programie do pobierania plikow. wcisnij 0 aby wyjsc, 1 aby zobaczyc liste plików, 2 aby wysłac plik, 3 aby sciagnac plik");
+            log("witam w programie do pobierania plikow.\n wcisnij 0 aby wyjsc, \n " +
+                    "1 aby zobaczyc liste plików,\n 2 aby wysłac plik,\n 3 aby sciagnac plik,\n 4 aby zaaktualizowac pliki na serwerze");
             String line = scn.nextLine();
             int port = 0;
             switch (line) {
@@ -66,6 +65,10 @@ public class Klient {
                     log("wpisz numer portu klienta od ktorego chcesz sciaganac plik");
                     port = scn.nextInt();
                     pullFile(port, scn, PORT);
+                    break;
+                case "4":
+                    sendFileToServer(serverAdress);
+                    break;
             }
         }
     }
@@ -102,9 +105,10 @@ public class Klient {
             bw.write(sb.toString());
             bw.newLine();
             bw.flush();
-            clientScoket.close();
+            lista.clear();
             br.close();
             bw.close();
+            clientScoket.close();
         } catch (IOException e) {
             log("prooblem z wyslaniem plikow " + e);
         }
@@ -136,7 +140,7 @@ public class Klient {
         lista.forEach(Klient::log);
         log("wpisz dokladna nazwe pliku ktory chcesz wyslac");
         String fileName = scn.nextLine();
-        File file = new File(PATH+fileName);
+        File file = new File(PATH + fileName);
         byte[] bytes = new byte[8192];
 
         InputStream in = new FileInputStream(file);
@@ -150,8 +154,6 @@ public class Klient {
         String serverREsp = br.readLine();
         log(serverREsp + " odpoweidz");
 
-
-
         bw.write(fileName);
         bw.newLine();
         bw.flush();
@@ -162,13 +164,15 @@ public class Klient {
         while ((count = in.read(bytes)) > 0) {
             out.write(bytes, 0, count);
         }
-
+        bw.close();
+        br.close();
+        out.flush();
         out.close();
         in.close();
         clientScoket.close();
     }
 
-    private static void pullFile(int serverPort, Scanner scn, int myPort) throws IOException{
+    private static void pullFile(int serverPort, Scanner scn, int myPort) throws IOException {
         InetAddress serverAdress = InetAddress.getByName(SERVERNAME);
         Socket clientScoket = new Socket(serverAdress, serverPort);
         scn.nextLine();
@@ -176,30 +180,33 @@ public class Klient {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(clientScoket.getOutputStream()));
         BufferedReader br = new BufferedReader(new InputStreamReader(clientScoket.getInputStream()));
 
-        log("wpisz nazwe pliku ktora chcesz sciagnac od hosta z portem "+serverPort);
+        log("wpisz nazwe pliku ktora chcesz sciagnac od hosta z portem " + serverPort);
         String fileName = scn.nextLine();
         bw.write("pull");
         bw.newLine();
         bw.flush();
         String serverREsp = br.readLine();
-        log(serverREsp + " odpoweidz");
-        log("-----------------"+myPort);
+        log(serverREsp + " -odpoweidz");
 
         bw.write(String.valueOf(myPort));
         bw.newLine();
         bw.flush();
         String serverREsp3 = br.readLine();
-        log(serverREsp3 + " odpoweidz");
+        log(serverREsp3 + " -odpoweidz");
 
         bw.write(fileName);
         bw.newLine();
         bw.flush();
         String serverREsp2 = br.readLine();
-        log(serverREsp2 + " odpoweidz");
+        log(serverREsp2 + " -odpoweidz");
+
+        br.close();
+        bw.close();
+        clientScoket.close();
 
     }
 
-    private static void serverClient(int PORT) throws IOException{
+    private static void serverClient(int PORT) throws IOException {
         System.out.println("start");
         System.out.println("serwer socker creation");
         ServerSocket serSock = null;
@@ -212,119 +219,120 @@ public class Klient {
         Socket socket = null;
         InputStream inputStream = null;
         OutputStream outputStream = null;
+        while (true) {
+            try {
+                socket = serSock.accept();
+            } catch (IOException ex) {
+                System.out.println("problem z zaakceptowaniem polaczenia od klienta");
+            }
 
-        try {
-            socket = serSock.accept();
-        } catch (IOException ex) {
-            System.out.println("problem z zaakceptowaniem polaczenia od klienta");
-        }
+            try {
+                inputStream = socket.getInputStream();
+            } catch (IOException ex) {
+                System.out.println("problem z is");
+            }
 
-        try {
-            inputStream = socket.getInputStream();
-        } catch (IOException ex) {
-            System.out.println("problem z is");
-        }
+            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            String operation = br.readLine();
+            bw.write("ok chcesz " + operation);
+            bw.newLine();
+            bw.flush();
+            switch (operation) {
+                case "push":
+                    String fileName = br.readLine();
+                    bw.write("ok, tworze plik " + fileName);
+                    bw.newLine();
+                    bw.flush();
+                    boolean isExist = new File(PATH + fileName).isFile();
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        String operation = br.readLine();
-        bw.write("ok chcesz "+operation);
-        bw.newLine();
-        bw.flush();
-        switch(operation) {
-            case "push":
-                String fileName = br.readLine();
-                bw.write("ok, tworze plik " + fileName);
-                bw.newLine();
-                bw.flush();
-                boolean isExist = new File(PATH+fileName).isFile();
-
-                try {
-                    if(!isExist) {
-                        outputStream = new FileOutputStream(PATH + fileName);
-                    } else {
-                        new File(PATH+fileName).delete();
-                        outputStream = new FileOutputStream(PATH + fileName);
+                    try {
+                        if (!isExist) {
+                            outputStream = new FileOutputStream(PATH + fileName);
+                        } else {
+                            new File(PATH + fileName).delete();
+                            outputStream = new FileOutputStream(PATH + fileName);
+                        }
+                    } catch (FileNotFoundException ex) {
+                        System.out.println("problem z utworzeniem pliku");
                     }
-                } catch (FileNotFoundException ex) {
-                    System.out.println("problem z utworzeniem pliku");
-                }
 
 
-                byte[] bytes = new byte[8192];
+                    byte[] bytes = new byte[8192];
 
-                int count;
-                try {
-                    while ((count = inputStream.read(bytes)) > 0) {
-                        outputStream.write(bytes, 0, count);
+                    int count;
+                    try {
+                        while ((count = inputStream.read(bytes)) > 0) {
+                            outputStream.write(bytes, 0, count);
+                        }
+                    } catch (NullPointerException e) {
+                        System.out.println("problem z bitami null pointer");
                     }
-                } catch (NullPointerException e) {
-                    System.out.println("problem z bitami null pointer");
-                }
 
-                outputStream.close();
-                inputStream.close();
-                socket.close();
-                serSock.close();
+                    //outputStream.close();
+                    //inputStream.close();
+                    //socket.close();
+                    //serSock.close();
 
-                System.out.println("end");
-                break;
-            case "pull":
-                log("start");
-                log("serwer socker creation");
+                    System.out.println("end");
+                    break;
+                case "pull":
+                    log("start");
+                    log("serwer socker creation");
 
-                BufferedReader br1 = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter bw1 = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    //BufferedReader br1 = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    //BufferedWriter bw1 = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-                String port = br1.readLine();
-                System.out.println("----------------"+port);
-                bw1.write("ok, odebrałem port twojego serwaera");
-                bw1.newLine();
-                bw1.flush();
+                    String port = br.readLine();
+                    System.out.println("----------------" + port);
+                    bw.write("ok, odebrałem port twojego serwaera");
+                    bw.newLine();
+                    bw.flush();
 
-                String fileName1 = br1.readLine();
-                bw1.write("ok, wysyłam plik"+fileName1);
-                bw1.newLine();
-                bw1.flush();
+                    String fileName1 = br.readLine();
+                    bw.write("ok, wysyłam plik" + fileName1);
+                    bw.newLine();
+                    bw.flush();
 
+                    int serverPort = Integer.valueOf(port);
 
+                    InetAddress serverAdress = InetAddress.getByName(SERVERNAME);
 
-                int serverPort = Integer.valueOf(port);
+                    Socket clientScoket = new Socket(serverAdress, serverPort);
 
-                InetAddress serverAdress = InetAddress.getByName(SERVERNAME);
+                    File file = new File(PATH + fileName1);
+                    byte[] bytes2 = new byte[8192];
 
-                Socket clientScoket = new Socket(serverAdress, serverPort);
+                    InputStream in = new FileInputStream(file);
+                    OutputStream out = clientScoket.getOutputStream();
 
-                File file = new File(PATH+fileName1);
-                byte[] bytes2 = new byte[8192];
-
-                InputStream in = new FileInputStream(file);
-                OutputStream out = clientScoket.getOutputStream();
-
-                BufferedWriter bw2 = new BufferedWriter(new OutputStreamWriter(clientScoket.getOutputStream()));
-                BufferedReader br2 = new BufferedReader(new InputStreamReader(clientScoket.getInputStream()));
-                bw2.write("push");
-                bw2.newLine();
-                bw2.flush();
-                String serverREsp = br2.readLine();
-                log(serverREsp + " odpoweidz");
+                    BufferedWriter bw2 = new BufferedWriter(new OutputStreamWriter(clientScoket.getOutputStream()));
+                    BufferedReader br2 = new BufferedReader(new InputStreamReader(clientScoket.getInputStream()));
+                    bw2.write("push");
+                    bw2.newLine();
+                    bw2.flush();
+                    String serverREsp = br2.readLine();
+                    log(serverREsp + " odpoweidz");
 
 
+                    bw2.write(fileName1);
+                    bw2.newLine();
+                    bw2.flush();
+                    String serverREsp2 = br2.readLine();
+                    log(serverREsp2 + " odpoweidz");
 
-                bw2.write(fileName1);
-                bw2.newLine();
-                bw2.flush();
-                String serverREsp2 = br2.readLine();
-                log(serverREsp2 + " odpoweidz");
+                    int count2;
+                    while ((count2 = in.read(bytes2)) > 0) {
+                        out.write(bytes2, 0, count2);
+                    }
 
-                int count2;
-                while ((count2 = in.read(bytes2)) > 0) {
-                    out.write(bytes2, 0, count2);
-                }
-
-                out.close();
-                in.close();
-                clientScoket.close();
+                    out.close();
+                    in.close();
+                    br2.close();
+                    bw2.close();
+                    clientScoket.close();
+                    break;
+            }
         }
 
     }
