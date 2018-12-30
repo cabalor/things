@@ -1,4 +1,4 @@
-package skj.projekt.test.projektSerwerKlient;
+package sieciPro;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -9,9 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Klient {
 
@@ -23,6 +21,7 @@ public class Klient {
     private final static String SERVERNAME = "localhost";
     private final static List<String> lista = new ArrayList<>();
     private final static List<String> filesChecksum = new ArrayList<>();
+    private final static Map<String, Long> FileSentMap = new HashMap<>();
 
     private static void log(String msg) {
         System.out.println(NAME + " " + msg);
@@ -143,6 +142,7 @@ public class Klient {
         File file = new File(PATH + fileName);
         byte[] bytes = new byte[8192];
 
+
         InputStream in = new FileInputStream(file);
         OutputStream out = clientScoket.getOutputStream();
 
@@ -153,17 +153,48 @@ public class Klient {
         bw.flush();
         String serverREsp = br.readLine();
         log(serverREsp + " odpoweidz");
-
+        log(FileSentMap.containsKey(fileName)+" czy zawiera taki plik juz mapa");
+        FileSentMap.keySet().forEach(Klient::log);
+        //todo
+        //tutaj jeszcze musi byc warunek czy file.length(); jest rowny temu co zostało wysłane, jezeli tak to wywalamy z mapy taki wpis i wysylamy od nowa plik w pierwszym ifie
+        //a jezeli nie to drugi if appendujemy, trzeba by zrobic jeszcze do jakiego klienta zostalo wyslane
+        if(!FileSentMap.containsKey(fileName)) {
+            log("jestem w pierwszym warunku");
         bw.write(fileName);
+        bw.newLine();
+        bw.flush();
+        bw.write("false");
         bw.newLine();
         bw.flush();
         String serverREsp2 = br.readLine();
         log(serverREsp2 + " odpoweidz");
-
-        int count;
-        while ((count = in.read(bytes)) > 0) {
-            out.write(bytes, 0, count);
+        Long bytesSend = 0L;
+            int count;
+            while ((count = in.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+                bytesSend = bytesSend + count;
+                FileSentMap.put(fileName, bytesSend);
+            }
+        } else {
+            log("jestem w drugim warunku");
+            bw.write(fileName);
+            bw.newLine();
+            bw.flush();
+            bw.write("true");
+            bw.newLine();
+            bw.flush();
+            String serverREsp2 = br.readLine();
+            log(serverREsp2 + " odpoweidz");
+            Long bytesSend = FileSentMap.get(fileName);
+            in.skip(FileSentMap.get(fileName));
+            int count;
+            while ((count = in.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+                bytesSend = bytesSend + count;
+                FileSentMap.put(fileName, bytesSend);
+            }
         }
+        log(FileSentMap.get(fileName)+" długosc pliku "+ file.length());
         bw.close();
         br.close();
         out.flush();
@@ -244,14 +275,15 @@ public class Klient {
                     bw.write("ok, tworze plik " + fileName);
                     bw.newLine();
                     bw.flush();
-                    boolean isExist = new File(PATH + fileName).isFile();
-
+                    String append = br.readLine();
+                    log("tutaj mamy "+ append);
                     try {
-                        if (!isExist) {
-                            outputStream = new FileOutputStream(PATH + fileName);
-                        } else {
+                        if (append.equals("false")) {
                             new File(PATH + fileName).delete();
                             outputStream = new FileOutputStream(PATH + fileName);
+                        } else {
+                            log("dopisuje do przerwanego pliku");
+                            outputStream = new FileOutputStream(PATH + fileName, true);
                         }
                     } catch (FileNotFoundException ex) {
                         System.out.println("problem z utworzeniem pliku");
@@ -269,7 +301,7 @@ public class Klient {
                         System.out.println("problem z bitami null pointer");
                     }
 
-                    //outputStream.close();
+                    outputStream.close();
                     //inputStream.close();
                     //socket.close();
                     //serSock.close();
