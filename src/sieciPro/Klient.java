@@ -1,4 +1,4 @@
-package sieciPro;
+package test;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -22,6 +22,7 @@ public class Klient {
     private final static List<String> lista = new ArrayList<>();
     private final static List<String> filesChecksum = new ArrayList<>();
     private final static Map<String, Long> FileSentMap = new HashMap<>();
+    private final static Map<String, Long> FileGetMap = new HashMap<>();
 
     private static void log(String msg) {
         System.out.println(NAME + " " + msg);
@@ -51,6 +52,9 @@ public class Klient {
             switch (line) {
                 case "0":
                     exit = true;
+                    serverThread.stop();
+                    logOutFromServer(serverAdress, PORT);
+                    System.exit(0);
                     break;
                 case "1":
                     askForFiles(serverAdress);
@@ -69,6 +73,23 @@ public class Klient {
                     sendFileToServer(serverAdress);
                     break;
             }
+        }
+    }
+
+    private static  void logOutFromServer(InetAddress serverAdress, int Port){
+        try {
+            Socket clientScoket = new Socket(serverAdress, SERVERPORT);
+            BufferedReader br = new BufferedReader(new InputStreamReader(clientScoket.getInputStream()));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(clientScoket.getOutputStream()));
+            bw.write("logout");
+            bw.newLine();
+            bw.flush();
+            bw.write(Port+"");
+            bw.newLine();
+            bw.flush();
+            clientScoket.close();
+        } catch (IOException e) {
+            log("wyjatek w pobieraniu listy" + e);
         }
     }
 
@@ -145,7 +166,7 @@ public class Klient {
 
         InputStream in = new FileInputStream(file);
         OutputStream out = clientScoket.getOutputStream();
-
+        //todo dorobic jeszcze druga mape dla wypychania i bedzie okej
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(clientScoket.getOutputStream()));
         BufferedReader br = new BufferedReader(new InputStreamReader(clientScoket.getInputStream()));
         bw.write("push");
@@ -153,29 +174,26 @@ public class Klient {
         bw.flush();
         String serverREsp = br.readLine();
         log(serverREsp + " odpoweidz");
-        log(FileSentMap.containsKey(fileName)+" czy zawiera taki plik juz mapa");
+        log(FileSentMap.containsKey(fileName) + " czy zawiera taki plik juz mapa");
         FileSentMap.keySet().forEach(Klient::log);
-        //todo
-        //tutaj jeszcze musi byc warunek czy file.length(); jest rowny temu co zostało wysłane, jezeli tak to wywalamy z mapy taki wpis i wysylamy od nowa plik w pierwszym ifie
-        //a jezeli nie to drugi if appendujemy, trzeba by zrobic jeszcze do jakiego klienta zostalo wyslane
-        if(!FileSentMap.containsKey(fileName)) {
+        if (!FileSentMap.containsKey(fileName)) {
             log("jestem w pierwszym warunku");
-        bw.write(fileName);
-        bw.newLine();
-        bw.flush();
-        bw.write("false");
-        bw.newLine();
-        bw.flush();
-        String serverREsp2 = br.readLine();
-        log(serverREsp2 + " odpoweidz");
-        Long bytesSend = 0L;
+            bw.write(fileName);
+            bw.newLine();
+            bw.flush();
+            bw.write("false");
+            bw.newLine();
+            bw.flush();
+            String serverREsp2 = br.readLine();
+            log(serverREsp2 + " odpoweidz");
+            Long bytesSend = 0L;
             int count;
             while ((count = in.read(bytes)) > 0) {
                 out.write(bytes, 0, count);
                 bytesSend = bytesSend + count;
                 FileSentMap.put(fileName, bytesSend);
             }
-        } else {
+        } else if (file.length() != FileSentMap.get(fileName) && file.length()>FileSentMap.get(fileName)) {
             log("jestem w drugim warunku");
             bw.write(fileName);
             bw.newLine();
@@ -193,15 +211,34 @@ public class Klient {
                 bytesSend = bytesSend + count;
                 FileSentMap.put(fileName, bytesSend);
             }
+        } else {
+            log("w else");
+            FileSentMap.remove(fileName);
+            bw.write(fileName);
+            bw.newLine();
+            bw.flush();
+            bw.write("false");
+            bw.newLine();
+            bw.flush();
+            String serverREsp2 = br.readLine();
+            log(serverREsp2 + " odpoweidz");
+            Long bytesSend = 0L;
+            int count;
+            while ((count = in.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
+                bytesSend = bytesSend + count;
+                FileSentMap.put(fileName, bytesSend);
+            }
         }
-        log(FileSentMap.get(fileName)+" długosc pliku "+ file.length());
+
+    log(FileSentMap.get(fileName)+" długosc pliku "+file.length());
         bw.close();
         br.close();
         out.flush();
         out.close();
         in.close();
         clientScoket.close();
-    }
+}
 
     private static void pullFile(int serverPort, Scanner scn, int myPort) throws IOException {
         InetAddress serverAdress = InetAddress.getByName(SERVERNAME);
@@ -236,6 +273,8 @@ public class Klient {
         clientScoket.close();
 
     }
+
+
 
     private static void serverClient(int PORT) throws IOException {
         System.out.println("start");
@@ -276,7 +315,7 @@ public class Klient {
                     bw.newLine();
                     bw.flush();
                     String append = br.readLine();
-                    log("tutaj mamy "+ append);
+                    log("tutaj mamy " + append);
                     try {
                         if (append.equals("false")) {
                             new File(PATH + fileName).delete();
@@ -345,23 +384,69 @@ public class Klient {
                     bw2.flush();
                     String serverREsp = br2.readLine();
                     log(serverREsp + " odpoweidz");
-
-
-                    bw2.write(fileName1);
-                    bw2.newLine();
-                    bw2.flush();
-                    String serverREsp2 = br2.readLine();
-                    log(serverREsp2 + " odpoweidz");
-
-                    int count2;
-                    while ((count2 = in.read(bytes2)) > 0) {
-                        out.write(bytes2, 0, count2);
+                    log(FileSentMap.containsKey(fileName1) + " czy zawiera taki plik juz mapa");
+                    FileSentMap.keySet().forEach(Klient::log);
+                    if (!FileSentMap.containsKey(fileName1)) {
+                        log("jestem w pierwszym warunku");
+                        bw2.write(fileName1);
+                        bw2.newLine();
+                        bw2.flush();
+                        bw2.write("false");
+                        bw2.newLine();
+                        bw2.flush();
+                        String serverREsp2 = br2.readLine();
+                        log(serverREsp2 + " odpoweidz");
+                        Long bytesSend = 0L;
+                        int count2;
+                        while ((count2 = in.read(bytes2)) > 0) {
+                            out.write(bytes2, 0, count2);
+                            bytesSend = bytesSend + count2;
+                            FileSentMap.put(fileName1, bytesSend);
+                        }
+                    } else if (file.length() != FileSentMap.get(fileName1) && file.length()>FileSentMap.get(fileName1)) {
+                        log("jestem w drugim warunku");
+                        bw2.write(fileName1);
+                        bw2.newLine();
+                        bw2.flush();
+                        bw2.write("true");
+                        bw2.newLine();
+                        bw2.flush();
+                        String serverREsp2 = br2.readLine();
+                        log(serverREsp2 + " odpoweidz");
+                        Long bytesSend = FileSentMap.get(fileName1);
+                        in.skip(FileSentMap.get(fileName1));
+                        int count2;
+                        while ((count2 = in.read(bytes2)) > 0) {
+                            out.write(bytes2, 0, count2);
+                            bytesSend = bytesSend + count2;
+                            FileSentMap.put(fileName1, bytesSend);
+                        }
+                    } else {
+                        log("w else");
+                        FileSentMap.remove(fileName1);
+                        bw2.write(fileName1);
+                        bw2.newLine();
+                        bw2.flush();
+                        bw2.write("false");
+                        bw2.newLine();
+                        bw2.flush();
+                        String serverREsp2 = br2.readLine();
+                        log(serverREsp2 + " odpoweidz");
+                        Long bytesSend = 0L;
+                        int count2;
+                        while ((count2 = in.read(bytes2)) > 0) {
+                            out.write(bytes2, 0, count2);
+                            bytesSend = bytesSend + count2;
+                            FileSentMap.put(fileName1, bytesSend);
+                        }
                     }
 
+                    log(FileSentMap.get(fileName1)+" długosc pliku "+file.length());
+                    bw2.close();
+                    br2.close();
+                    out.flush();
                     out.close();
                     in.close();
-                    br2.close();
-                    bw2.close();
                     clientScoket.close();
                     break;
             }

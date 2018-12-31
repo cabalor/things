@@ -1,11 +1,10 @@
-package skj.projekt.test.projektSerwerKlient;
+package test;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 public class Server {
@@ -47,6 +46,10 @@ public static void main(String[] args) throws Exception{
                     case "lista":
                         sendFileList(clientScocket);
                         break;
+                    case "logout":
+                        String port = br.readLine();
+                        deleteUser(port);
+                        break;
                     default:
                         inserIntoMap(hostFiles);
                 }
@@ -65,12 +68,12 @@ public static void main(String[] args) throws Exception{
             mapa.put(port, things.substring(portEnd+1));
     }
 
-    private static String getClientInfo(Socket clientScocket){
-
-    String clientInfo = clientScocket.getInetAddress().toString();
-    int port = clientScocket.getPort();
-
-    return clientInfo + " "+port;
+    private static void deleteUser(String port){
+            log("usuwam ziomusia");
+            log(port);
+            mapa.remove(port);
+            log("zalogowaniu ziomusie");
+            mapa.keySet().forEach(Server::log);
     }
 
     private static String getFileName(String key){
